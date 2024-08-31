@@ -1,5 +1,5 @@
+import { ReactNode } from "react";
 import { styled } from "styled-components";
-
 
 const Wrapper = styled.div`
   display: grid;
@@ -55,24 +55,28 @@ const Wrapper = styled.div`
   }
 `;
 
-export const Holy = ({ Header, SideA, Main, SideB, Footer }) => {
+interface HolyProps {
+  Header: ReactNode;
+  SideA: ReactNode;
+  Main: ReactNode;
+  SideB: ReactNode;
+  Footer: ReactNode;
+}
+
+export const Holy = ({
+  Header,
+  SideA,
+  Main,
+  SideB,
+  Footer,
+}: HolyProps) => {
   return (
     <Wrapper>
-      <div className="header">
-        <Header />
-      </div>
-      <div className="side-a">
-        <SideA />
-      </div>
-      <div className="main">
-        <Main />
-      </div>
-      <div className="side-b">
-        <SideB />
-      </div>
-      <div className="footer">
-        <Footer />
-      </div>
+      <div className="header">{Header}</div>
+      <div className="side-a">{SideA}</div>
+      <div className="main">{Main}</div>
+      <div className="side-b">{SideB}</div>
+      <div className="footer">{Footer}</div>
     </Wrapper>
   );
-}
+};

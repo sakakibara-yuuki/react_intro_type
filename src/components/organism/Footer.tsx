@@ -1,4 +1,4 @@
-import { styled } from 'styled-components';
+import { styled } from "styled-components";
 
 const FooterContainer = styled.footer`
   text-align: center;
@@ -10,7 +10,7 @@ const FooterContainer = styled.footer`
 export const Footer = () => {
   return (
     <FooterContainer>
-    © 2024 Sakakibara Yuuki. All rights reserved.
+      © 2024 Sakakibara Yuuki. All rights reserved.
     </FooterContainer>
-  )
+  );
 };

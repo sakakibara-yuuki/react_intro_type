@@ -1,6 +1,6 @@
 import { RoleButton } from "../atoms/button/RoleButton";
-import { Select } from "../atoms/button/Select";
-
+import { Select } from "../atoms/select/Select";
+import { User } from "../../types/User"
 import styled from "styled-components";
 
 const Wrapper = styled.div`
@@ -10,10 +10,19 @@ const Wrapper = styled.div`
   padding-right: 8px;
   width: 80%;
   padding-top: 16px;
+
+  @media (max-width: 768px) {
+    grid-template-columns: repeat(4, 1fr);
+    justify-items: center;
+    align-items: center;
+  }
 `;
 
+interface FilterProperty {
+  sampleUser: User
+}
 
-export const Filter = ({ sampleUser }) => {
+export const Filter = ({ sampleUser }: FilterProperty) => {
   return (
     <Wrapper>
       <RoleButton>全員</RoleButton>
@@ -22,10 +31,13 @@ export const Filter = ({ sampleUser }) => {
 
       <Select>
         {Object.keys(sampleUser).map((key: string) => {
-          return <option value={key}>{key}</option>;
+          return (
+            <option key={key} value={key}>
+              {key}
+            </option>
+          );
         })}
       </Select>
-
     </Wrapper>
   );
 };

@@ -6,9 +6,9 @@
  */
 
 :root {
-  --color-primary: #F7F0E9;
-  --color-secondary: #FFAF9B;
-  --color-tertiary: #DF5333;
+  --color-primary: #f7f0e9;
+  --color-secondary: #ffaf9b;
+  --color-tertiary: #df5333;
   --color-quaternary: #424242;
 
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
@@ -19,7 +19,7 @@
   color: var(--color-quaternary);
   background-color: var(--color-primary);
 
-
+  /*font*/
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
