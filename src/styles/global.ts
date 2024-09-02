@@ -8,12 +8,12 @@ type GlobalStyleProps = {
 export const globalStyle = createGlobalStyle`
   :root {
     // dark-mode
-    --dark-background: #1A1B27;
-    --dark-text: #F5F5F7;
+    // --dark-background: #1A1B27;
+    // --dark-text: #F5F5F7;
 
     // light-mode
-    --light-background: #f2f2f2;
-    --light-text: #2E0509;
+    // --light-background: #f2f2f2;
+    // --light-text: #2E0509;
   }
 
   * {
@@ -25,6 +25,8 @@ export const globalStyle = createGlobalStyle`
     box-sizing: content-box;
     height: 100vh;
     background-color: ${({ theme }: GlobalStyleProps) => theme.backgroundColor};
+    color: ${({ theme }: GlobalStyleProps) => theme.text};
+    transition: background-color 0.4s;
   }
 `;
 

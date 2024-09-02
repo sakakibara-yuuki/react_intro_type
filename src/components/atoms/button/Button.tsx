@@ -7,12 +7,12 @@ const StyledButton = styled.button<ButtonProps>`
   margin: 1em;
   padding: 0.25em 1em;
   border-radius: 5px;
-  color: ${(props) => props.theme.secondary};
-  background-color: ${(props) => props.theme.primary};
+  color: ${({ theme }) => theme.buttonText};
+  background-color: ${({ theme }) => theme.buttonBackground};
   cursor: pointer;
   &:hover {
-    color: ${(props) => props.theme.primary};
-    background-color: ${(props) => props.theme.secondary};
+    color: ${({ theme }) => theme.buttonBackground};
+    background-color: ${({ theme }) => theme.buttonText};
   }
 `;
 

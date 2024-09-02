@@ -29,7 +29,6 @@ const Wrapper = styled.div`
   > .side-a {
     grid-area: side-a;
     overflow: auto;
-    width: auto;
   }
 
   > .side-b {
