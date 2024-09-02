@@ -9,8 +9,9 @@ export default tseslint.config(
   {
     extends: [js.configs.recommended,
     ...tseslint.configs.recommended,
-      "airbnb",
-      "airbnb-typescript"],
+      // "airbnb",
+      // "airbnb-typescript"
+    ],
     files: ["**/*.{ts,tsx}"],
     languageOptions: {
       ecmaVersion: 2020,

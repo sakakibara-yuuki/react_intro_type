@@ -1,7 +1,5 @@
-import { useState } from "react";
-import { User } from "../../types/User";
-import { styled } from "styled-components";
-import { SubmitButton } from "../atoms/button/SubmitButton";
+import styled from "styled-components";
+import { Button } from "../atoms/button/Button";
 
 const Form = styled.form`
   padding: 1em;
@@ -22,49 +20,14 @@ const Form = styled.form`
   }
 `;
 
-export const UserForm = () => {
+interface UserFormProps {
+  onChangeForm: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  onClickAdd: (event: React.MouseEvent<HTMLButtonElement>) => void;
+}
 
-  const [newUser, setNewUser] = useState<User>();
+export function UserForm(props: UserFormProps) {
 
-  const onClickButton = (event: React.MouseEvent<HTMLButtonElement>) => {
-    // const user: User = {
-    //   name: event.target.form.name.value,
-    //   role: event.target.form.role.value,
-    //   email: event.target.form.email.value,
-    //   age: event.target.form.age.value,
-    //   postCode: event.target.form.postCode.value,
-    //   phone: event.target.form.phone.value,
-    //   hobbies: event.target.form.hobbies.value,
-    //   url: event.target.form.url.value,
-    //   studyMinutes: event.target.form.studyMinutes.value,
-    //   taskCode: event.target.form.taskCode.value,
-    //   studyLangs: event.target.form.studyLangs.value,
-    //   score: event.target.form.score.value,
-    // }
-
-    // if (validateUser(user)) {
-    // setNewUser(user)
-    const form = event.currentTarget.form!
-    setNewUser({
-      id: 1,
-      name: form.name.valueOf(),
-      role: form.roleOfUser.value,
-      email: form.email.value,
-      age: form.age.value,
-      postCode: form.postCode.value,
-      phone: form.phone.value,
-      hobbies: form.hobbies.value,
-      url: form.url.value,
-    });
-  };
-
-  // const [newUser, setNewUser] = useState<User>(sampleUser);
-
-  // const user = { ...newUser}
-  // user[event.target.id] = event.target.value
-
-  const onChangeForm = (event: React.ChangeEvent<HTMLInputElement>) => {
-  };
+  const { onChangeForm, onClickAdd } = props;
 
   return (
     <Form>
@@ -191,7 +154,7 @@ export const UserForm = () => {
           />
         </div>
       </fieldset>
-      <SubmitButton onClick={onClickButton}>add</SubmitButton>
+      <Button label={"追加"} onClick={onClickAdd} />
     </Form>
   );
 };

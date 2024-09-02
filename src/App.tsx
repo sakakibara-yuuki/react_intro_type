@@ -4,6 +4,10 @@
 
 import { useState } from "react";
 
+import { ThemeProvider } from "styled-components";
+import GlobalStyle from "./styles/global";
+import { lightTheme, darkTheme } from "./styles/themes";
+
 import USER_LIST from "./userList.json";
 import { User } from "./types/User";
 import { Header } from "./components/organism/Header";
@@ -17,18 +21,31 @@ import { Holy } from "./components/templates/Holy";
 function App() {
 
   const sampleUser: User = USER_LIST[0];
-  console.log("sampleUser", typeof sampleUser);
+  const [user, setUser] = useState<User>(sampleUser);
+  const [theme, setTheme] = useState(lightTheme);
 
-  const [newUser, setNewUser] = useState<User>(sampleUser);
+  const onChangeForm = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setUser({
+      ...user,
+      [event.target.id]: event.target.value,
+    });
+  };
+
+  const onClickAdd = (event: React.MouseEvent<HTMLButtonElement>) => {
+    console.log("newUser", event);
+  }
 
   return (
-    <Holy
-      Header={<Header />}
-      SideA={<UserForm />}
-      Main={<Table userList={USER_LIST} sampleUser={sampleUser} />}
-      SideB={<Filter sampleUser={sampleUser} />}
-      Footer={<Footer />}
-    />
+    <ThemeProvider theme={theme}>
+      <GlobalStyle />
+      <Holy
+        Header={<Header themeToggler={() => theme == lightTheme ? setTheme(darkTheme) : setTheme(lightTheme)} />}
+        SideA={<UserForm onChangeForm={onChangeForm} onClickAdd={onClickAdd} />}
+        Main={<Table userList={USER_LIST} sampleUser={sampleUser} />}
+        SideB={<Filter sampleUser={sampleUser} />}
+        Footer={<Footer />}
+      />
+    </ThemeProvider>
   );
 }
 

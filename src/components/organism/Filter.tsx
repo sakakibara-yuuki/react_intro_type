@@ -1,4 +1,4 @@
-import { RoleButton } from "../atoms/button/RoleButton";
+import { Button } from "../atoms/button/Button";
 import { Select } from "../atoms/select/Select";
 import { User } from "../../types/User"
 import styled from "styled-components";
@@ -22,12 +22,13 @@ interface FilterProperty {
   sampleUser: User
 }
 
-export const Filter = ({ sampleUser }: FilterProperty) => {
+export function Filter({ sampleUser }: FilterProperty) {
+
   return (
     <Wrapper>
-      <RoleButton>全員</RoleButton>
-      <RoleButton>生徒</RoleButton>
-      <RoleButton>メンター</RoleButton>
+      <Button label={"全員"} />
+      <Button label={"生徒"} />
+      <Button label={"メンター"} />
 
       <Select>
         {Object.keys(sampleUser).map((key: string) => {
