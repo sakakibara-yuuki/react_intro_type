@@ -19,26 +19,16 @@ const Wrapper = styled.div`
 `;
 
 interface FilterProperty {
-  sampleUser: User
+  onClick: (event: React.MouseEvent<HTMLButtonElement>) => void
 }
 
-export function Filter({ sampleUser }: FilterProperty) {
+export function Filter({ onClick }: FilterProperty) {
 
   return (
     <Wrapper>
-      <Button label={"全員"} />
-      <Button label={"生徒"} />
-      <Button label={"メンター"} />
-
-      <Select>
-        {Object.keys(sampleUser).map((key: string) => {
-          return (
-            <option key={key} value={key}>
-              {key}
-            </option>
-          );
-        })}
-      </Select>
+      <Button label={"全員"} onClick={onClick} />
+      <Button label={"生徒"} onClick={onClick} />
+      <Button label={"メンター"} onClick={onClick} />
     </Wrapper>
   );
 };

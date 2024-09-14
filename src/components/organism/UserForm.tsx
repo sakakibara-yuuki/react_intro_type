@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import { useForm, SubmitHandler } from "react-hook-form";
 import { Button } from "../atoms/button/Button";
 
 const Form = styled.form`
@@ -6,7 +7,7 @@ const Form = styled.form`
   border-radius: 8px;
 
   & fieldset {
-    border: 5px solid var(--color-secondary);
+    border: 5px solid ${({ theme }) => theme.buttonText};
   }
 
   & > * + * {
@@ -25,14 +26,51 @@ interface UserFormProps {
   onClickAdd: (event: React.MouseEvent<HTMLButtonElement>) => void;
 }
 
+type Inputs = {
+  name: string;
+  roleOfUser: string;
+  email: string;
+  age: number;
+  postCode: number;
+  phone: number;
+  hobbies: Array<string>;
+  url: string;
+}
+
+type StudentInputs = {
+  studyMinutes: number;
+  taskCode: string;
+  studyLangs: Array<string>;
+  score: number;
+}
+
+type TeacherInputs = {
+  teachMinutes: number;
+  teachLangs: Array<string>;
+}
+
 export function UserForm(props: UserFormProps) {
 
   const { onChangeForm, onClickAdd } = props;
 
+  const { register, handleSubmit, watch, formState: { erros } } = useForm<Inputs>(); //引数はInputs型 ? Inputsって何?
+  const onSubmit: SubmitHandler<Inputs> = (data) => console.log(data); //onSubmit は関数であり、引数にはdataが入る
+
   return (
-    <Form>
+    <Form onSubmit={handleSubmit(onSubmit)}>
       <fieldset>
         <legend>New User</legend>
+        <div>
+          <label htmlFor="roleOfUser">role: </label>
+          <input {...register("roleOfUser", { required: true })} />
+          <input
+            type="text"
+            id="roleOfUser"
+            onChange={onChangeForm}
+            placeholder="students"
+            required
+          />
+        </div>
         <div>
           <label htmlFor="name">Name: </label>
           <input
@@ -40,16 +78,6 @@ export function UserForm(props: UserFormProps) {
             id="name"
             onChange={onChangeForm}
             placeholder="渋沢栄一"
-            required
-          />
-        </div>
-        <div>
-          <label htmlFor="roleOfUser">role: </label>
-          <input
-            type="text"
-            id="roleOfUser"
-            onChange={onChangeForm}
-            placeholder="students"
             required
           />
         </div>

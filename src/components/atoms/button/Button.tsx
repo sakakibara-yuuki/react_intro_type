@@ -7,12 +7,12 @@ const StyledButton = styled.button<ButtonProps>`
   margin: 1em;
   padding: 0.25em 1em;
   border-radius: 5px;
-  color: ${({ theme }) => theme.buttonText};
+  color: ${({ theme }) => theme.text};
   background-color: ${({ theme }) => theme.buttonBackground};
   cursor: pointer;
   &:hover {
     color: ${({ theme }) => theme.buttonBackground};
-    background-color: ${({ theme }) => theme.buttonText};
+    background-color: ${({ theme }) => theme.text};
   }
 `;
 
@@ -30,6 +30,6 @@ export function Button(props: ButtonProps) {
   const onClick = props.onClick;
 
   return (
-    < StyledButton onClick={onClick} > {label}</ StyledButton >
+    <StyledButton onClick={onClick} > {label}</ StyledButton >
   );
 }

@@ -8,18 +8,14 @@ interface ColorPallet {
 
 function lightDarkColor(color: ColorPallet): Array<ColorPallet> {
 
-  function antiColor(color: ColorPallet): ColorPallet {
-    return {
-      primary: color.quaternary,
-      secondary: color.tertiary,
-      tertiary: color.secondary,
-      quaternary: color.primary,
-    }
-  }
+  const antiColor = (color: ColorPallet): ColorPallet => ({
+    primary: color.quaternary,
+    secondary: color.tertiary,
+    tertiary: color.secondary,
+    quaternary: color.primary,
+  });
 
-  const palletLight = color;
-  const palletDark = antiColor(color);
-  return [palletLight, palletDark];
+  return [color, antiColor(color)];
 }
 
 const pallet1: ColorPallet = {
@@ -43,26 +39,28 @@ const pallet3: ColorPallet = {
   quaternary: '#888888',
 }
 
-const [palletLight, palletDark] = lightDarkColor(pallet1);
-
-
 export interface ThemeProps {
   backgroundColor: string;
-  text: string;
   buttonBackground?: string;
-  butttontext?: string;
+  butttonText?: string;
+  text: string;
 }
 
-export const lightTheme: ThemeProps = {
-  backgroundColor: palletLight.primary,
-  text: palletLight.quaternary,
-  buttonBackground: palletLight.secondary,
-  butttontext: palletLight.quaternary,
+function palletToTheme(color: ColorPallet): ThemeProps {
+  return {
+    backgroundColor: color.primary,
+    buttonBackground: color.secondary,
+    butttonText: color.tertiary,
+    text: color.quaternary,
+  }
 }
 
-export const darkTheme: ThemeProps = {
-  backgroundColor: palletDark.primary,
-  text: palletDark.quaternary,
-  buttonBackground: palletDark.secondary,
-  butttontext: palletDark.quaternary,
+function createTheme(color: ColorPallet): Array<ThemeProps> {
+  const [palletLight, palletDark] = lightDarkColor(color);
+  const lightTheme = palletToTheme(palletLight);
+  const darkTheme = palletToTheme(palletDark);
+
+  return [lightTheme, darkTheme];
 }
+
+export const [lightTheme, darkTheme] = createTheme(pallet1);

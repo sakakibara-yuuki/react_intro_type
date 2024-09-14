@@ -9,7 +9,7 @@ import GlobalStyle from "./styles/global";
 import { lightTheme, darkTheme } from "./styles/themes";
 
 import USER_LIST from "./userList.json";
-import { User } from "./types/User";
+import { Student, Mentor } from "./types/User";
 import { Header } from "./components/organism/Header";
 import { UserForm } from "./components/organism/UserForm";
 import { Table } from "./components/organism/Table";
@@ -20,10 +20,11 @@ import { Holy } from "./components/templates/Holy";
 
 function App() {
 
-  const sampleUser: User = USER_LIST[0];
-  const [user, setUser] = useState<User>(sampleUser);
+  // for add new user
+  const [user, setUser] = useState<Student | Mentor>(USER_LIST[0] as Student | Mentor);
   const [theme, setTheme] = useState(lightTheme);
 
+  // for add new user
   const onChangeForm = (event: React.ChangeEvent<HTMLInputElement>) => {
     setUser({
       ...user,
@@ -31,8 +32,53 @@ function App() {
     });
   };
 
+  // for add new user
   const onClickAdd = (event: React.MouseEvent<HTMLButtonElement>) => {
     console.log("newUser", event);
+  }
+
+  // for filter
+  const allUserList: (Student | Mentor)[] = USER_LIST as (Student | Mentor)[];
+  const [userList, setUserList] = useState<(Student | Mentor)[]>(allUserList);
+  const [category, setCategory] = useState<"user" | "student" | "mentor">("user");
+
+  function filterTable(event: React.MouseEvent<HTMLButtonElement>): void {
+    switch (event.currentTarget.innerText) {
+      case "全員":
+        setUserList(allUserList);
+        setCategory("user");
+        break;
+      case "生徒":
+        setUserList(allUserList.filter((user) => user.role == "student"));
+        setCategory("student");
+        break;
+      case "メンター":
+        setUserList(allUserList.filter((user) => user.role == "mentor"));
+        setCategory("mentor");
+        break;
+    }
+  }
+
+  // for sort
+  function sortStudentList(key: "score" | "studyMinutes", order: "asc" | "desc") {
+    let sortFn: (a: Student, b: Student) => number;
+    if (order === "asc") {
+      sortFn = (a: Student, b: Student) => a[key] - b[key];
+    } else {
+      sortFn = (a: Student, b: Student) => b[key] - a[key];
+    }
+    setUserList([...(userList as Student[]).sort(sortFn)]);
+  }
+
+
+  function sortMentorList(key: "experienceDays", order: "asc" | "desc") {
+    let sortFn: (a: Mentor, b: Mentor) => number;
+    if (order === "asc") {
+      sortFn = (a: Mentor, b: Mentor) => a[key] - b[key];
+    } else {
+      sortFn = (a: Mentor, b: Mentor) => b[key] - a[key];
+    }
+    setUserList([...(userList as Mentor[]).sort(sortFn)]);
   }
 
   return (
@@ -41,8 +87,8 @@ function App() {
       <Holy
         Header={<Header themeToggler={() => theme == lightTheme ? setTheme(darkTheme) : setTheme(lightTheme)} />}
         SideA={<UserForm onChangeForm={onChangeForm} onClickAdd={onClickAdd} />}
-        Main={<Table userList={USER_LIST} sampleUser={sampleUser} />}
-        SideB={<Filter sampleUser={sampleUser} />}
+        Main={<Table userList={userList} category={category} sortStudentList={sortStudentList} sortMentorList={sortMentorList} />}
+        SideB={<Filter onClick={filterTable} />}
         Footer={<Footer />}
       />
     </ThemeProvider>

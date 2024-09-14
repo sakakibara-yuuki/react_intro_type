@@ -1,7 +1,6 @@
 export interface User {
   id: number;
   name: string;
-  role: string;
   email: string;
   age: number;
   postCode: string;
@@ -11,13 +10,16 @@ export interface User {
 }
 
 export interface Student extends User {
+  role: "student";
   studyMinutes: number;
   taskCode: number;
-  studyLangs: Array<string>;
   score: number;
+  studyLangs: Array<string>;
+  mentorId: number;
 }
 
 export interface Mentor extends User {
+  role: "mentor";
   experienceDays: number;
   useLangs: Array<string>;
   availableStartCode: number;
