@@ -21,7 +21,6 @@ import { Holy } from "./components/templates/Holy";
 function App() {
 
   // for add new user
-  const [user, setUser] = useState<Student | Mentor>(USER_LIST[0] as Student | Mentor);
   const [theme, setTheme] = useState(lightTheme);
 
   // for filter
