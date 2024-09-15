@@ -1,0 +1,27 @@
+export interface User {
+  id: number;
+  name: string;
+  email: string;
+  age: number;
+  postCode: string;
+  phone: string;
+  hobbies: Array<string>;
+  url: string;
+}
+
+export interface Student extends User {
+  role: "student";
+  studyMinutes: number;
+  taskCode: number;
+  score: number;
+  studyLangs: Array<string>;
+  mentorId: number;
+}
+
+export interface Mentor extends User {
+  role: "mentor";
+  experienceDays: number;
+  useLangs: Array<string>;
+  availableStartCode: number;
+  availableEndCode: number;
+}
