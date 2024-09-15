@@ -101,11 +101,17 @@ export function Table({ userList, category, sortStudentList, sortMentorList }: T
   const selectedTableRows = userList.map((user: Student | Mentor, index: number) => {
     return user.role === "student" ? (
       <tr key={index}>
-        {attributes.map((key) => <td key={key}>{Object.keys(user).includes(key) ? user[key as keyof Student] : "x"}</td>)}
+        {attributes.map((key) => <td key={key}>{
+          Object.keys(user).includes(key) ?
+            Array.isArray(user[key as keyof Student]) ? user[key as keyof Student].join('　') : user[key as keyof Student]
+            : "x"}</td>)}
       </tr>
     ) : (
       <tr key={index}>
-        {attributes.map((key) => <td key={key}>{Object.keys(user).includes(key) ? user[key as keyof Mentor] : "x"}</td>)}
+        {attributes.map((key) => <td key={key}>{
+          Object.keys(user).includes(key) ?
+            Array.isArray(user[key as keyof Mentor]) ? user[key as keyof Mentor].join('　') : user[key as keyof Mentor]
+            : "x"}</td>)}
       </tr>
     );
   });

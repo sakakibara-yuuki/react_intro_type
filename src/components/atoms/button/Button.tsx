@@ -22,14 +22,16 @@ interface ButtonProps {
     secondary: string;
   };
   label?: string;
+  type?: "button" | "submit" | "reset";
   onClick?: (event: React.MouseEvent<HTMLButtonElement>) => void;
 }
 
 export function Button(props: ButtonProps) {
   const label = props.label;
   const onClick = props.onClick;
+  const type = props.type;
 
   return (
-    <StyledButton onClick={onClick} > {label}</ StyledButton >
+    <StyledButton onClick={onClick} type={type}> {label}</ StyledButton >
   );
 }

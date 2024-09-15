@@ -1,6 +1,7 @@
 import styled from "styled-components";
 import { useState } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
+import { Student, Mentor } from "../../types/User";
 import { Button } from "../atoms/button/Button";
 
 const Form = styled.form`
@@ -21,113 +22,85 @@ const Form = styled.form`
   }
 `;
 
-interface UserFormProps {
-  onChangeForm: (event: React.ChangeEvent<HTMLInputElement>) => void;
-  onClickAdd: (event: React.MouseEvent<HTMLButtonElement>) => void;
-}
+const ToggleDiv = styled.div`
 
-type Inputs = {
-  name: string;
-  roleOfUser: string;
-  email: string;
-  age: number;
-  postCode: number;
-  phone: number;
-  hobbies: string[];
-  url: string;
-}
+  border: 1px solid ${({ theme }) => theme.text};
+  border-radius: 10px;
+  margin-bottom: 1em;
 
-type StudentInputs = {
-  studyMinutes: number;
-  taskCode: string;
-  studyLangs: string[];
-  score: number;
-}
+  input[type="checkbox"] {
+    appearance: none;
+    position: absolute;
+    transition: all 0.3s;
+    transition: all 0.3s;
+  }
 
-type TeacherInputs = {
-  teachMinutes: number;
-  teachLangs: string[];
-}
+  label {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    border-top-left-radius: 10px;
+    border-bottom-left-radius: 10px;
+    border-top-right-radius: 10px;
+    border-bottom-right-radius: 10px;
+    text-align: center;
+  }
 
+  label :nth-child(1) {
+    position: relative;
+  }
+  label :nth-child(2) {
+    position: relative;
+  }
+
+
+  label :nth-child(1)::before {
+    background-color: ${({ theme }) => theme.buttonBackground};
+    border-top-left-radius: 10px;
+    border-bottom-left-radius: 10px;
+    content: "";
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    transition: all 0.3s;
+  }
+
+  label :nth-child(2)::before {
+    background-color: ${({ theme }) => theme.buttonBackground};
+    border-top-right-radius: 10px;
+    border-bottom-right-radius: 10px;
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 0%;
+    height: 100%;
+    z-index: -1;
+    transition: all 0.3s;
+  }
+
+  input[type="checkbox"] {
+    & + label :nth-child(1)::before {
+      width: 100%;
+    }
+    & + label :nth-child(2)::before {
+      width: 0%;
+    }
+  }
+
+  input[type="checkbox"]:checked {
+    & + label :nth-child(1)::before {
+      width: 0%;
+    }
+    & + label :nth-child(2)::before {
+      width: 100%;
+    }
+  }
+`;
 
 function ToggleRoleOfUser({ roleOfUser, onChange }: { roleOfUser: "student" | "mentor", onChange: () => void }) {
-  const ToggleDiv = styled.div`
-
-    border: 1px solid ${({ theme }) => theme.text};
-    border-radius: 10px;
-    margin-bottom: 1em;
-
-    input[type="checkbox"] {
-      appearance: none;
-      position: absolute;
-      transition: all 0.3s;
-      transition: all 0.3s;
-    }
-
-    label {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      border-top-left-radius: 10px;
-      border-bottom-left-radius: 10px;
-      border-top-right-radius: 10px;
-      border-bottom-right-radius: 10px;
-      text-align: center;
-    }
-
-    label :nth-child(1) {
-      position: relative;
-    }
-    label :nth-child(2) {
-      position: relative;
-    }
-
-
-    label :nth-child(1)::before {
-      background-color: ${({ theme }) => theme.buttonBackground};
-      border-top-left-radius: 10px;
-      border-bottom-left-radius: 10px;
-      content: "";
-      position: absolute;
-      top: 0;
-      right: 0;
-      width: 100%;
-      height: 100%;
-      z-index: -1;
-      transition: all 0.3s;
-    }
-
-    label :nth-child(2)::before {
-      background-color: ${({ theme }) => theme.buttonBackground};
-      border-top-right-radius: 10px;
-      border-bottom-right-radius: 10px;
-      content: "";
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 0%;
-      height: 100%;
-      z-index: -1;
-      transition: all 0.3s;
-    }
-
-    input[type="checkbox"] {
-      & + label :nth-child(1)::before {
-        width: 100%;
-      }
-      & + label :nth-child(2)::before {
-        width: 0%;
-      }
-    }
-
-    input[type="checkbox"]:checked {
-      & + label :nth-child(1)::before {
-        width: 0%;
-      }
-      & + label :nth-child(2)::before {
-        width: 100%;
-      }
-    }
-  `;
   return (
     <ToggleDiv>
       <input type="checkbox" id="roleOfUser" checked={roleOfUser === "student" ? false : true} onChange={onChange} />
@@ -139,7 +112,7 @@ function ToggleRoleOfUser({ roleOfUser, onChange }: { roleOfUser: "student" | "m
   )
 }
 
-function UserFrom() {
+function AllUserInput({ register }: { register: any }) {
   return (
     <>
       <div>
@@ -148,7 +121,7 @@ function UserFrom() {
           type="text"
           id="name"
           placeholder="鈴木太郎"
-          required
+          {...register("name", { required: true })}
         />
       </div>
       <div>
@@ -157,7 +130,7 @@ function UserFrom() {
           type="email"
           id="email"
           placeholder="test1@happiness.com"
-          required
+          {...register("email", { required: true })}
         />
       </div>
       <div>
@@ -166,7 +139,7 @@ function UserFrom() {
           type="text"
           id="age"
           placeholder="26"
-          required
+          {...register("age", { required: true, min: 0, max: 100 })}
         />
       </div>
       <div>
@@ -175,7 +148,7 @@ function UserFrom() {
           type="text"
           id="postCode"
           placeholder="100-0003"
-          required
+          {...register("postCode", { required: true, pattern: /^[0-9]{3}-[0-9]{4}$/ })}
         />
       </div>
       <div>
@@ -184,7 +157,7 @@ function UserFrom() {
           type="text"
           id="phone"
           placeholder="0120000001"
-          required
+          {...register("phone", { required: true, pattern: /^[0-9]{10,11}$/ })}
         />
       </div>
       <div>
@@ -192,8 +165,8 @@ function UserFrom() {
         <input
           type="text"
           id="hobbies"
-          placeholder="20"
-          required
+          placeholder="旅行 食べ歩き サーフィン"
+          {...register("hobbies", { required: true })}
         />
       </div>
       <div>
@@ -202,14 +175,14 @@ function UserFrom() {
           type="url"
           id="url"
           placeholder="https://aaa.com"
-          required
+          {...register("url", { required: true, pattern: /^https?:\/\/.+/ })}
         />
       </div>
     </>
   );
 }
 
-function StudentForm() {
+function StudentInput({ register }: { register: any }) {
   return (
     <>
       <div>
@@ -218,7 +191,7 @@ function StudentForm() {
           type="text"
           id="score"
           placeholder="68"
-          required
+          {...register("score", { required: true, min: 0 })}
         />
       </div>
       <div>
@@ -227,7 +200,7 @@ function StudentForm() {
           type="text"
           id="studyMinutes"
           placeholder="3000"
-          required
+          {...register("studyMinutes", { required: true, min: 0 })}
         />
       </div>
       <div>
@@ -236,7 +209,7 @@ function StudentForm() {
           type="text"
           id="taskCode"
           placeholder="101"
-          required
+          {...register("taskCode", { required: true, min: 0 })}
         />
       </div>
       <div>
@@ -245,14 +218,14 @@ function StudentForm() {
           type="text"
           id="studyLangs"
           placeholder="RailsJavascript"
-          required
+          {...register("studyLangs", { required: true })}
         />
       </div>
     </>
   );
 }
 
-function MentorForm() {
+function MentorInput({ register }: { register: any }) {
   return (
     <>
       <div>
@@ -261,16 +234,16 @@ function MentorForm() {
           type="text"
           id="experienceDays"
           placeholder="1850"
-          required
+          {...register("experienceDays", { required: true, min: 0 })}
         />
       </div>
       <div>
-        <label htmlFor="userLangs">useLangs: </label>
+        <label htmlFor="useLangs">useLangs: </label>
         <input
           type="text"
-          id="userLangs"
+          id="useLangs"
           placeholder="Next.jsGoLang"
-          required
+          {...register("useLangs", { required: true })}
         />
       </div>
       <div>
@@ -279,7 +252,7 @@ function MentorForm() {
           type="text"
           id="availableStartCode"
           placeholder="201"
-          required
+          {...register("availableStartCode", { required: true, min: 0 })}
         />
       </div>
       <div>
@@ -288,29 +261,40 @@ function MentorForm() {
           type="text"
           id="availableEndCode"
           placeholder="302"
-          required
+          {...register("availableEndCode", { required: true, min: 0 })}
         />
       </div>
     </>
   )
 }
 
-
-export function UserForm(props: UserFormProps) {
-
-  const { onChangeForm, onClickAdd } = props;
+export function UserForm({ userList, setUserList }) {
 
   const [roleOfUser, setRoleOfUser] = useState<"student" | "mentor">("student");
 
+  const { register, handleSubmit } = useForm<Student | Mentor>();
+  const onSubmit: SubmitHandler<Student | Mentor> = (data) => {
+    data.role = roleOfUser;
+    data.hobbies = data.hobbies.split(" ");
+    if (data.role === "student") {
+      data.studyLangs = data.studyLangs.split(" ");
+    } else {
+      data.useLangs = data.useLangs.split(" ");
+    }
+    data.id = userList.length + 1;
+    console.log(data);
+    setUserList([...userList, data]);
+  }
+
   return (
-    <Form>
+    <Form onSubmit={handleSubmit(onSubmit)}>
       <fieldset>
         <legend>New User</legend>
         <ToggleRoleOfUser roleOfUser={roleOfUser} onChange={() => setRoleOfUser(roleOfUser === "student" ? "mentor" : "student")} />
-        <UserFrom />
-        {roleOfUser === "student" ? <StudentForm /> : <MentorForm />}
+        <AllUserInput register={register} />
+        {roleOfUser === "student" ? <StudentInput register={register} /> : <MentorInput register={register} />}
       </fieldset>
-      <Button label={"追加"} onClick={onClickAdd} />
+      <Button label={"追加"} type="submit" />
     </Form>
   );
 };

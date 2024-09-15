@@ -5,7 +5,7 @@ export interface User {
   age: number;
   postCode: string;
   phone: string;
-  hobbies: Array<string>;
+  hobbies: string[];
   url: string;
 }
 
@@ -14,14 +14,14 @@ export interface Student extends User {
   studyMinutes: number;
   taskCode: number;
   score: number;
-  studyLangs: Array<string>;
+  studyLangs: string[];
   mentorId: number;
 }
 
 export interface Mentor extends User {
   role: "mentor";
   experienceDays: number;
-  useLangs: Array<string>;
+  useLangs: string[];
   availableStartCode: number;
   availableEndCode: number;
 }

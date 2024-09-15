@@ -24,19 +24,6 @@ function App() {
   const [user, setUser] = useState<Student | Mentor>(USER_LIST[0] as Student | Mentor);
   const [theme, setTheme] = useState(lightTheme);
 
-  // for add new user
-  const onChangeForm = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setUser({
-      ...user,
-      [event.target.id]: event.target.value,
-    });
-  };
-
-  // for add new user
-  const onClickAdd = (event: React.MouseEvent<HTMLButtonElement>) => {
-    console.log("newUser", event);
-  }
-
   // for filter
   const allUserList: (Student | Mentor)[] = USER_LIST as (Student | Mentor)[];
   const [userList, setUserList] = useState<(Student | Mentor)[]>(allUserList);
@@ -86,7 +73,7 @@ function App() {
       <GlobalStyle />
       <Holy
         Header={<Header themeToggler={() => theme == lightTheme ? setTheme(darkTheme) : setTheme(lightTheme)} />}
-        SideA={<UserForm onChangeForm={onChangeForm} onClickAdd={onClickAdd} />}
+        SideA={<UserForm userList={userList} setUserList={setUserList} />}
         Main={<Table userList={userList} category={category} sortStudentList={sortStudentList} sortMentorList={sortMentorList} />}
         SideB={<Filter onClick={filterTable} />}
         Footer={<Footer />}
