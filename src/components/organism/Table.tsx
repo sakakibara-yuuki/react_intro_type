@@ -54,9 +54,9 @@ const AttributeContainer = styled.div`
 
 
 export function Table({ showList, category, sortStudentList, sortMentorList }: TableProps) {
-  let attributes = ["id", "name", "email", "age", "postCode", "phone", "hobbies", "url", "role"];
+  let attributes = ["id", "name", "email", "age", "postCode", "phone", "hobbies", "url", "role", "incharge"];
   const studentAttributes = ["score", "studyMinutes", "taskCode", "studyLangs"];
-  const mentorAttributes = ["experienceDays", "useLangs", "availableStartCode", "availableEndCode", "incharge"];
+  const mentorAttributes = ["experienceDays", "useLangs", "availableStartCode", "availableEndCode"];
   const sortableAttributes = ["score", "studyMinutes", "experienceDays"];
 
   if (category === "user") {

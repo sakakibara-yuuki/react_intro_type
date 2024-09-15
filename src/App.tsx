@@ -26,11 +26,21 @@ function App() {
   const [userList, setUserList] = useState<(Student | Mentor)[]>(modifyUsers(allUserList));
   const [category, setCategory] = useState<"user" | "student" | "mentor">("user");
 
-  function addInCharge(user: Mentor, userList: (Student | Mentor)[]) {
+  function addMentorInCharge(user: Mentor, userList: (Student | Mentor)[]) {
     user.incharge = [];
     for (const otherUser of userList) {
-      if (otherUser.role !== "student") continue;
+      if (otherUser.role === "mentor") continue;
       if (user.availableStartCode <= otherUser.taskCode && otherUser.taskCode <= user.availableEndCode) {
+        user.incharge.push(otherUser.name);
+      }
+    }
+  }
+
+  function addStudentInCharge(user: Student, userList: (Student | Mentor)[]) {
+    user.incharge = [];
+    for (const otherUser of userList) {
+      if (otherUser.role === "student") continue;
+      if (otherUser.availableStartCode <= user.taskCode && user.taskCode <= otherUser.availableEndCode) {
         user.incharge.push(otherUser.name);
       }
     }
@@ -38,20 +48,24 @@ function App() {
 
   function modifyUsers(allUserList: (Student | Mentor)[]): (Student | Mentor)[] {
     for (const user of allUserList) {
-      if (user.role !== "mentor") continue;
-      addInCharge(user, allUserList);
+      if (user.role === "student") {
+        addStudentInCharge(user, allUserList);
+      } else {
+        addMentorInCharge(user, allUserList);
+      }
     }
     return allUserList;
   }
 
   function addNewUser(user: Student | Mentor) {
-
-    if (user.role !== "mentor") {
+    if (user.role === "student") {
+      addStudentInCharge(user, userList);
       setUserList([...userList, user]);
       return null;
+    } else {
+      addMentorInCharge(user, userList);
+      setUserList([...userList, user]);
     }
-    addInCharge(user, userList);
-    setUserList([...userList, user]);
   }
 
   // for submit
