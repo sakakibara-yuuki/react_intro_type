@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { styled } from "styled-components";
 import { Student, Mentor } from "../../types/User";
 
@@ -98,23 +99,40 @@ export function Table({ userList, category, sortStudentList, sortMentorList }: T
     );
   });
 
-  const selectedTableRows = userList.map((user: Student | Mentor, index: number) => {
-    return user.role === "student" ? (
+  function showUserList() {
+    switch (category) {
+      case "user":
+        return userList;
+      case "student":
+        return userList.filter((user) => user.role == "student");
+      case "mentor":
+        return userList.filter((user) => user.role == "mentor");
+    }
+  }
+
+  function showTableData<T extends Student | Mentor>(user: T) {
+    return attributes.map((key) => {
+      let value: string;
+      if (Object.keys(user).includes(key)) {
+        if (Array.isArray(user[key as keyof T])) {
+          value = (user[key as keyof T] as string[]).join('　');
+        } else {
+          value = (user[key as keyof T] as string);
+        }
+      } else {
+        value = "x";
+      }
+      return <td key={key}>{value}</td>;
+    });
+  }
+
+  function showTableRows<T extends Student | Mentor>(user: T, index: number) {
+    return (
       <tr key={index}>
-        {attributes.map((key) => <td key={key}>{
-          Object.keys(user).includes(key) ?
-            Array.isArray(user[key as keyof Student]) ? (user[key as keyof Student] as string[]).join('　') : user[key as keyof Student]
-            : "x"}</td>)}
-      </tr>
-    ) : (
-      <tr key={index}>
-        {attributes.map((key) => <td key={key}>{
-          Object.keys(user).includes(key) ?
-            Array.isArray(user[key as keyof Mentor]) ? (user[key as keyof Mentor] as string[]).join('　') : user[key as keyof Mentor]
-            : "x"}</td>)}
+        {showTableData<T>(user)}
       </tr>
     );
-  });
+  }
 
   return (
     <Wrapper>
@@ -124,7 +142,13 @@ export function Table({ userList, category, sortStudentList, sortMentorList }: T
         </tr>
       </thead>
       <tbody>
-        {selectedTableRows}
+        {showUserList().map((user: Student | Mentor, index: number) => {
+          if (user.role === "student") {
+            return showTableRows<Student>(user, index);
+          } else {
+            return showTableRows<Mentor>(user, index);
+          }
+        })}
       </tbody>
     </Wrapper>
   );

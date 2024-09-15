@@ -24,4 +24,5 @@ export interface Mentor extends User {
   useLangs: string[];
   availableStartCode: number;
   availableEndCode: number;
+  incharge?: string;
 }

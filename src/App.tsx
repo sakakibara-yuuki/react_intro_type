@@ -22,24 +22,32 @@ function App() {
 
   // for add new user
   const [theme, setTheme] = useState(lightTheme);
-
-  // for filter
   const allUserList: (Student | Mentor)[] = USER_LIST as (Student | Mentor)[];
   const [userList, setUserList] = useState<(Student | Mentor)[]>(allUserList);
   const [category, setCategory] = useState<"user" | "student" | "mentor">("user");
 
+  function addNewUser(user: Student | Mentor) {
+    if (user.role === "mentor") {
+      for (const otherUser of userList) {
+        if (otherUser.role === "student" && user.availableStartCode <= otherUser.taskCode && otherUser.taskCode <= user.availableStartCode) {
+          alert("The mentor's available start code is already taken.");
+          user.incharge = otherUser.name;
+        }
+      }
+    }
+    setUserList([...userList, user]);
+  }
+
+  // for filter
   function filterTable(event: React.MouseEvent<HTMLButtonElement>): void {
     switch (event.currentTarget.innerText) {
       case "全員":
-        setUserList(allUserList);
         setCategory("user");
         break;
       case "生徒":
-        setUserList(allUserList.filter((user) => user.role == "student"));
         setCategory("student");
         break;
       case "メンター":
-        setUserList(allUserList.filter((user) => user.role == "mentor"));
         setCategory("mentor");
         break;
     }
@@ -56,7 +64,7 @@ function App() {
         data.useLangs = (data.useLangs as string).split(" ");
       }
       data.id = userList.length + 1;
-      setUserList([...userList, data]);
+      addNewUser(data);
     }
     return onSubmit;
   }
