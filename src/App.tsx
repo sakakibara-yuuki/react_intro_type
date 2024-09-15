@@ -45,6 +45,23 @@ function App() {
     }
   }
 
+  // for submit
+  function submitUser(roleOfUser) {
+    const onSubmit = (data) => {
+      data.role = roleOfUser;
+      data.hobbies = data.hobbies.split(" ");
+      if (data.role === "student") {
+        data.studyLangs = data.studyLangs.split(" ");
+      } else {
+        data.useLangs = data.useLangs.split(" ");
+      }
+      data.id = userList.length + 1;
+      console.log(data);
+      setUserList([...userList, data]);
+    }
+    return onSubmit;
+  }
+
   // for sort
   function sortStudentList(key: "score" | "studyMinutes", order: "asc" | "desc") {
     let sortFn: (a: Student, b: Student) => number;
@@ -72,7 +89,7 @@ function App() {
       <GlobalStyle />
       <Holy
         Header={<Header themeToggler={() => theme == lightTheme ? setTheme(darkTheme) : setTheme(lightTheme)} />}
-        SideA={<UserForm userList={userList} setUserList={setUserList} />}
+        SideA={<UserForm submitUser={submitUser} />}
         Main={<Table userList={userList} category={category} sortStudentList={sortStudentList} sortMentorList={sortMentorList} />}
         SideB={<Filter onClick={filterTable} />}
         Footer={<Footer />}

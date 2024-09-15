@@ -268,26 +268,13 @@ function MentorInput({ register }: { register: any }) {
   )
 }
 
-export function UserForm({ userList, setUserList }) {
+export function UserForm({ submitUser }) {
 
   const [roleOfUser, setRoleOfUser] = useState<"student" | "mentor">("student");
-
   const { register, handleSubmit } = useForm<Student | Mentor>();
-  const onSubmit: SubmitHandler<Student | Mentor> = (data) => {
-    data.role = roleOfUser;
-    data.hobbies = data.hobbies.split(" ");
-    if (data.role === "student") {
-      data.studyLangs = data.studyLangs.split(" ");
-    } else {
-      data.useLangs = data.useLangs.split(" ");
-    }
-    data.id = userList.length + 1;
-    console.log(data);
-    setUserList([...userList, data]);
-  }
 
   return (
-    <Form onSubmit={handleSubmit(onSubmit)}>
+    <Form onSubmit={handleSubmit(submitUser(roleOfUser))}>
       <fieldset>
         <legend>New User</legend>
         <ToggleRoleOfUser roleOfUser={roleOfUser} onChange={() => setRoleOfUser(roleOfUser === "student" ? "mentor" : "student")} />
