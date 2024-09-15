@@ -103,14 +103,14 @@ export function Table({ userList, category, sortStudentList, sortMentorList }: T
       <tr key={index}>
         {attributes.map((key) => <td key={key}>{
           Object.keys(user).includes(key) ?
-            Array.isArray(user[key as keyof Student]) ? user[key as keyof Student].join('　') : user[key as keyof Student]
+            Array.isArray(user[key as keyof Student]) ? (user[key as keyof Student] as string[]).join('　') : user[key as keyof Student]
             : "x"}</td>)}
       </tr>
     ) : (
       <tr key={index}>
         {attributes.map((key) => <td key={key}>{
           Object.keys(user).includes(key) ?
-            Array.isArray(user[key as keyof Mentor]) ? user[key as keyof Mentor].join('　') : user[key as keyof Mentor]
+            Array.isArray(user[key as keyof Mentor]) ? (user[key as keyof Mentor] as string[]).join('　') : user[key as keyof Mentor]
             : "x"}</td>)}
       </tr>
     );

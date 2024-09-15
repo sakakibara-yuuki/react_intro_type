@@ -46,17 +46,16 @@ function App() {
   }
 
   // for submit
-  function submitUser(roleOfUser) {
+  function submitUser(roleOfUser: "student" | "mentor") {
     const onSubmit = (data) => {
       data.role = roleOfUser;
-      data.hobbies = data.hobbies.split(" ");
+      data.hobbies = (data.hobbies as string).split(" ");
       if (data.role === "student") {
-        data.studyLangs = data.studyLangs.split(" ");
+        data.studyLangs = (data.studyLangs as string).split(" ");
       } else {
-        data.useLangs = data.useLangs.split(" ");
+        data.useLangs = (data.useLangs as string).split(" ");
       }
       data.id = userList.length + 1;
-      console.log(data);
       setUserList([...userList, data]);
     }
     return onSubmit;
