@@ -1,8 +1,9 @@
+import { useState } from "react";
 import { styled } from "styled-components";
 import { Student, Mentor } from "../../types/User";
 
 interface TableProps {
-  userList: (Student | Mentor)[];
+  showList: (Student | Mentor)[];
   category: "user" | "student" | "mentor";
   sortStudentList: (key: "score" | "studyMinutes", order: "asc" | "desc") => void;
   sortMentorList: (key: "experienceDays", order: "asc" | "desc") => void;
@@ -52,10 +53,10 @@ const AttributeContainer = styled.div`
 `;
 
 
-export function Table({ userList, category, sortStudentList, sortMentorList }: TableProps) {
+export function Table({ showList, category, sortStudentList, sortMentorList }: TableProps) {
   let attributes = ["id", "name", "email", "age", "postCode", "phone", "hobbies", "url", "role"];
   const studentAttributes = ["score", "studyMinutes", "taskCode", "studyLangs"];
-  const mentorAttributes = ["experienceDays", "useLangs", "availableStartCode", "availableEndCode"];
+  const mentorAttributes = ["experienceDays", "useLangs", "availableStartCode", "availableEndCode", "incharge"];
   const sortableAttributes = ["score", "studyMinutes", "experienceDays"];
 
   if (category === "user") {
@@ -98,17 +99,41 @@ export function Table({ userList, category, sortStudentList, sortMentorList }: T
     );
   });
 
-  const selectedTableRows = userList.map((user: Student | Mentor, index: number) => {
-    return user.role === "student" ? (
+
+  function showUserList() {
+    switch (category) {
+      case "user":
+        return showList;
+      case "student":
+        return showList.filter((user) => user.role == "student");
+      case "mentor":
+        return showList.filter((user) => user.role == "mentor");
+    }
+  }
+
+  function showTableData<T extends Student | Mentor>(user: T) {
+    return attributes.map((key) => {
+      let value: string;
+      if (Object.keys(user).includes(key)) {
+        if (Array.isArray(user[key as keyof T])) {
+          value = (user[key as keyof T] as string[]).join('　');
+        } else {
+          value = (user[key as keyof T] as string);
+        }
+      } else {
+        value = "x";
+      }
+      return <td key={key}>{value}</td>;
+    });
+  }
+
+  function showTableRows<T extends Student | Mentor>(user: T, index: number) {
+    return (
       <tr key={index}>
-        {attributes.map((key) => <td key={key}>{Object.keys(user).includes(key) ? user[key as keyof Student] : "x"}</td>)}
-      </tr>
-    ) : (
-      <tr key={index}>
-        {attributes.map((key) => <td key={key}>{Object.keys(user).includes(key) ? user[key as keyof Mentor] : "x"}</td>)}
+        {showTableData<T>(user)}
       </tr>
     );
-  });
+  }
 
   return (
     <Wrapper>
@@ -118,7 +143,13 @@ export function Table({ userList, category, sortStudentList, sortMentorList }: T
         </tr>
       </thead>
       <tbody>
-        {selectedTableRows}
+        {showUserList().map((user: Student | Mentor, index: number) => {
+          if (user.role === "student") {
+            return showTableRows<Student>(user, index);
+          } else {
+            return showTableRows<Mentor>(user, index);
+          }
+        })}
       </tbody>
     </Wrapper>
   );

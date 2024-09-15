@@ -21,40 +21,71 @@ import { Holy } from "./components/templates/Holy";
 function App() {
 
   // for add new user
-  const [user, setUser] = useState<Student | Mentor>(USER_LIST[0] as Student | Mentor);
   const [theme, setTheme] = useState(lightTheme);
-
-  // for add new user
-  const onChangeForm = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setUser({
-      ...user,
-      [event.target.id]: event.target.value,
-    });
-  };
-
-  // for add new user
-  const onClickAdd = (event: React.MouseEvent<HTMLButtonElement>) => {
-    console.log("newUser", event);
-  }
-
-  // for filter
   const allUserList: (Student | Mentor)[] = USER_LIST as (Student | Mentor)[];
-  const [userList, setUserList] = useState<(Student | Mentor)[]>(allUserList);
+  const [userList, setUserList] = useState<(Student | Mentor)[]>(modifyUsers(allUserList));
   const [category, setCategory] = useState<"user" | "student" | "mentor">("user");
 
+  function addInCharge(user: Mentor, userList: (Student | Mentor)[]) {
+    user.incharge = [];
+    for (const otherUser of userList) {
+      if (otherUser.role !== "student") continue;
+      if (user.availableStartCode <= otherUser.taskCode && otherUser.taskCode <= user.availableEndCode) {
+        user.incharge.push(otherUser.name);
+      }
+    }
+  }
+
+  function modifyUsers(allUserList: (Student | Mentor)[]): (Student | Mentor)[] {
+    for (const user of allUserList) {
+      if (user.role !== "mentor") continue;
+      addInCharge(user, allUserList);
+    }
+    return allUserList;
+  }
+
+  function addNewUser(user: Student | Mentor) {
+
+    if (user.role !== "mentor") {
+      setUserList([...userList, user]);
+      return null;
+    }
+    addInCharge(user, userList);
+    setUserList([...userList, user]);
+  }
+
+  // for submit
+  function submitUser(roleOfUser: "student" | "mentor") {
+    const onSubmit = (data) => {
+      data.role = roleOfUser;
+      data.hobbies = (data.hobbies as string).split(" ");
+      if (data.role === "student") {
+        data.studyLangs = (data.studyLangs as string).split(" ");
+      } else {
+        data.useLangs = (data.useLangs as string).split(" ");
+      }
+      data.id = userList.length + 1;
+      addNewUser(data);
+    }
+    return onSubmit;
+  }
+
+  const [showList, setShowList] = useState<(Student | Mentor)[]>(userList);
+
+  // for filter
   function filterTable(event: React.MouseEvent<HTMLButtonElement>): void {
     switch (event.currentTarget.innerText) {
       case "全員":
-        setUserList(allUserList);
         setCategory("user");
+        setShowList(userList);
         break;
       case "生徒":
-        setUserList(allUserList.filter((user) => user.role == "student"));
         setCategory("student");
+        setShowList(userList.filter((user) => user.role == "student"));
         break;
       case "メンター":
-        setUserList(allUserList.filter((user) => user.role == "mentor"));
         setCategory("mentor");
+        setShowList(userList.filter((user) => user.role == "mentor"));
         break;
     }
   }
@@ -67,9 +98,8 @@ function App() {
     } else {
       sortFn = (a: Student, b: Student) => b[key] - a[key];
     }
-    setUserList([...(userList as Student[]).sort(sortFn)]);
+    setShowList([...(showList as Student[]).sort(sortFn)]);
   }
-
 
   function sortMentorList(key: "experienceDays", order: "asc" | "desc") {
     let sortFn: (a: Mentor, b: Mentor) => number;
@@ -78,7 +108,7 @@ function App() {
     } else {
       sortFn = (a: Mentor, b: Mentor) => b[key] - a[key];
     }
-    setUserList([...(userList as Mentor[]).sort(sortFn)]);
+    setShowList([...(showList as Mentor[]).sort(sortFn)]);
   }
 
   return (
@@ -86,8 +116,8 @@ function App() {
       <GlobalStyle />
       <Holy
         Header={<Header themeToggler={() => theme == lightTheme ? setTheme(darkTheme) : setTheme(lightTheme)} />}
-        SideA={<UserForm onChangeForm={onChangeForm} onClickAdd={onClickAdd} />}
-        Main={<Table userList={userList} category={category} sortStudentList={sortStudentList} sortMentorList={sortMentorList} />}
+        SideA={<UserForm submitUser={submitUser} />}
+        Main={<Table showList={showList} category={category} sortStudentList={sortStudentList} sortMentorList={sortMentorList} />}
         SideB={<Filter onClick={filterTable} />}
         Footer={<Footer />}
       />
