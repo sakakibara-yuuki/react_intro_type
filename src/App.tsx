@@ -23,34 +23,35 @@ function App() {
   // for add new user
   const [theme, setTheme] = useState(lightTheme);
   const allUserList: (Student | Mentor)[] = USER_LIST as (Student | Mentor)[];
-  const [userList, setUserList] = useState<(Student | Mentor)[]>(allUserList);
+  const [userList, setUserList] = useState<(Student | Mentor)[]>(modifyUsers(allUserList));
   const [category, setCategory] = useState<"user" | "student" | "mentor">("user");
 
-  function addNewUser(user: Student | Mentor) {
-    if (user.role === "mentor") {
-      for (const otherUser of userList) {
-        if (otherUser.role === "student" && user.availableStartCode <= otherUser.taskCode && otherUser.taskCode <= user.availableStartCode) {
-          alert("The mentor's available start code is already taken.");
-          user.incharge = otherUser.name;
-        }
+  function addInCharge(user: Mentor, userList: (Student | Mentor)[]) {
+    user.incharge = [];
+    for (const otherUser of userList) {
+      if (otherUser.role !== "student") continue;
+      if (user.availableStartCode <= otherUser.taskCode && otherUser.taskCode <= user.availableEndCode) {
+        user.incharge.push(otherUser.name);
       }
     }
-    setUserList([...userList, user]);
   }
 
-  // for filter
-  function filterTable(event: React.MouseEvent<HTMLButtonElement>): void {
-    switch (event.currentTarget.innerText) {
-      case "全員":
-        setCategory("user");
-        break;
-      case "生徒":
-        setCategory("student");
-        break;
-      case "メンター":
-        setCategory("mentor");
-        break;
+  function modifyUsers(allUserList: (Student | Mentor)[]): (Student | Mentor)[] {
+    for (const user of allUserList) {
+      if (user.role !== "mentor") continue;
+      addInCharge(user, allUserList);
     }
+    return allUserList;
+  }
+
+  function addNewUser(user: Student | Mentor) {
+
+    if (user.role !== "mentor") {
+      setUserList([...userList, user]);
+      return null;
+    }
+    addInCharge(user, userList);
+    setUserList([...userList, user]);
   }
 
   // for submit
@@ -69,6 +70,26 @@ function App() {
     return onSubmit;
   }
 
+  const [showList, setShowList] = useState<(Student | Mentor)[]>(userList);
+
+  // for filter
+  function filterTable(event: React.MouseEvent<HTMLButtonElement>): void {
+    switch (event.currentTarget.innerText) {
+      case "全員":
+        setCategory("user");
+        setShowList(userList);
+        break;
+      case "生徒":
+        setCategory("student");
+        setShowList(userList.filter((user) => user.role == "student"));
+        break;
+      case "メンター":
+        setCategory("mentor");
+        setShowList(userList.filter((user) => user.role == "mentor"));
+        break;
+    }
+  }
+
   // for sort
   function sortStudentList(key: "score" | "studyMinutes", order: "asc" | "desc") {
     let sortFn: (a: Student, b: Student) => number;
@@ -77,9 +98,8 @@ function App() {
     } else {
       sortFn = (a: Student, b: Student) => b[key] - a[key];
     }
-    setUserList([...(userList as Student[]).sort(sortFn)]);
+    setShowList([...(showList as Student[]).sort(sortFn)]);
   }
-
 
   function sortMentorList(key: "experienceDays", order: "asc" | "desc") {
     let sortFn: (a: Mentor, b: Mentor) => number;
@@ -88,7 +108,7 @@ function App() {
     } else {
       sortFn = (a: Mentor, b: Mentor) => b[key] - a[key];
     }
-    setUserList([...(userList as Mentor[]).sort(sortFn)]);
+    setShowList([...(showList as Mentor[]).sort(sortFn)]);
   }
 
   return (
@@ -97,7 +117,7 @@ function App() {
       <Holy
         Header={<Header themeToggler={() => theme == lightTheme ? setTheme(darkTheme) : setTheme(lightTheme)} />}
         SideA={<UserForm submitUser={submitUser} />}
-        Main={<Table userList={userList} category={category} sortStudentList={sortStudentList} sortMentorList={sortMentorList} />}
+        Main={<Table showList={showList} category={category} sortStudentList={sortStudentList} sortMentorList={sortMentorList} />}
         SideB={<Filter onClick={filterTable} />}
         Footer={<Footer />}
       />

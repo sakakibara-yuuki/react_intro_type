@@ -3,7 +3,7 @@ import { styled } from "styled-components";
 import { Student, Mentor } from "../../types/User";
 
 interface TableProps {
-  userList: (Student | Mentor)[];
+  showList: (Student | Mentor)[];
   category: "user" | "student" | "mentor";
   sortStudentList: (key: "score" | "studyMinutes", order: "asc" | "desc") => void;
   sortMentorList: (key: "experienceDays", order: "asc" | "desc") => void;
@@ -53,10 +53,10 @@ const AttributeContainer = styled.div`
 `;
 
 
-export function Table({ userList, category, sortStudentList, sortMentorList }: TableProps) {
+export function Table({ showList, category, sortStudentList, sortMentorList }: TableProps) {
   let attributes = ["id", "name", "email", "age", "postCode", "phone", "hobbies", "url", "role"];
   const studentAttributes = ["score", "studyMinutes", "taskCode", "studyLangs"];
-  const mentorAttributes = ["experienceDays", "useLangs", "availableStartCode", "availableEndCode"];
+  const mentorAttributes = ["experienceDays", "useLangs", "availableStartCode", "availableEndCode", "incharge"];
   const sortableAttributes = ["score", "studyMinutes", "experienceDays"];
 
   if (category === "user") {
@@ -99,14 +99,15 @@ export function Table({ userList, category, sortStudentList, sortMentorList }: T
     );
   });
 
+
   function showUserList() {
     switch (category) {
       case "user":
-        return userList;
+        return showList;
       case "student":
-        return userList.filter((user) => user.role == "student");
+        return showList.filter((user) => user.role == "student");
       case "mentor":
-        return userList.filter((user) => user.role == "mentor");
+        return showList.filter((user) => user.role == "mentor");
     }
   }
 
