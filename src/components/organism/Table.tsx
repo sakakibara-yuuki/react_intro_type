@@ -5,7 +5,10 @@ import { Student, Mentor } from "../../types/User";
 interface TableProps {
   showList: (Student | Mentor)[];
   category: "user" | "student" | "mentor";
-  sortStudentList: (key: "score" | "studyMinutes", order: "asc" | "desc") => void;
+  sortStudentList: (
+    key: "score" | "studyMinutes",
+    order: "asc" | "desc",
+  ) => void;
   sortMentorList: (key: "experienceDays", order: "asc" | "desc") => void;
 }
 
@@ -52,11 +55,31 @@ const AttributeContainer = styled.div`
 }
 `;
 
-
-export function Table({ showList, category, sortStudentList, sortMentorList }: TableProps) {
-  let attributes = ["id", "name", "email", "age", "postCode", "phone", "hobbies", "url", "role", "incharge"];
+export function Table({
+  showList,
+  category,
+  sortStudentList,
+  sortMentorList,
+}: TableProps) {
+  let attributes = [
+    "id",
+    "name",
+    "email",
+    "age",
+    "postCode",
+    "phone",
+    "hobbies",
+    "url",
+    "role",
+    "incharge",
+  ];
   const studentAttributes = ["score", "studyMinutes", "taskCode", "studyLangs"];
-  const mentorAttributes = ["experienceDays", "useLangs", "availableStartCode", "availableEndCode"];
+  const mentorAttributes = [
+    "experienceDays",
+    "useLangs",
+    "availableStartCode",
+    "availableEndCode",
+  ];
   const sortableAttributes = ["score", "studyMinutes", "experienceDays"];
 
   if (category === "user") {
@@ -99,7 +122,6 @@ export function Table({ showList, category, sortStudentList, sortMentorList }: T
     );
   });
 
-
   function showUserList() {
     switch (category) {
       case "user":
@@ -116,9 +138,9 @@ export function Table({ showList, category, sortStudentList, sortMentorList }: T
       let value: string;
       if (Object.keys(user).includes(key)) {
         if (Array.isArray(user[key as keyof T])) {
-          value = (user[key as keyof T] as string[]).join('　');
+          value = (user[key as keyof T] as string[]).join("　");
         } else {
-          value = (user[key as keyof T] as string);
+          value = user[key as keyof T] as string;
         }
       } else {
         value = "x";
@@ -128,19 +150,13 @@ export function Table({ showList, category, sortStudentList, sortMentorList }: T
   }
 
   function showTableRows<T extends Student | Mentor>(user: T, index: number) {
-    return (
-      <tr key={index}>
-        {showTableData<T>(user)}
-      </tr>
-    );
+    return <tr key={index}>{showTableData<T>(user)}</tr>;
   }
 
   return (
     <Wrapper>
       <thead>
-        <tr>
-          {attributeTableHeader}
-        </tr>
+        <tr>{attributeTableHeader}</tr>
       </thead>
       <tbody>
         {showUserList().map((user: Student | Mentor, index: number) => {
@@ -153,4 +169,4 @@ export function Table({ showList, category, sortStudentList, sortMentorList }: T
       </tbody>
     </Wrapper>
   );
-};
+}

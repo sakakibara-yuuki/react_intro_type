@@ -1,7 +1,6 @@
 import React from "react";
 import { styled } from "styled-components";
 
-
 const StyledButton = styled.button<ButtonProps>`
   font-size: 1em;
   margin: 1em;
@@ -32,6 +31,9 @@ export function Button(props: ButtonProps) {
   const type = props.type;
 
   return (
-    <StyledButton onClick={onClick} type={type}> {label}</ StyledButton >
+    <StyledButton onClick={onClick} type={type}>
+      {" "}
+      {label}
+    </StyledButton>
   );
 }
