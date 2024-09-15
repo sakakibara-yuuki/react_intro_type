@@ -1,6 +1,4 @@
 import { Button } from "../atoms/button/Button";
-import { Select } from "../atoms/select/Select";
-import { User } from "../../types/User"
 import styled from "styled-components";
 
 const Wrapper = styled.div`
