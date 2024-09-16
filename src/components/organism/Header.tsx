@@ -1,7 +1,6 @@
 import { styled } from "styled-components";
 import TogglerButton from "../atoms/button/TogglerButton";
 
-
 const Wrapper = styled.header`
   display: flex;
   justify-content: space-between;
@@ -19,11 +18,10 @@ const Title = styled.div`
 `;
 
 export function Header({ themeToggler }: { themeToggler: () => void }) {
-
   return (
     <Wrapper>
       <Title>HPC</Title>
       <TogglerButton themeToggler={themeToggler} />
     </Wrapper>
   );
-};
+}

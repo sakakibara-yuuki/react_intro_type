@@ -16,6 +16,7 @@ export interface Student extends User {
   score: number;
   studyLangs: string[];
   mentorId: number;
+  incharge?: string[];
 }
 
 export interface Mentor extends User {

@@ -62,13 +62,7 @@ interface HolyProps {
   Footer: ReactNode;
 }
 
-export const Holy = ({
-  Header,
-  SideA,
-  Main,
-  SideB,
-  Footer,
-}: HolyProps) => {
+export const Holy = ({ Header, SideA, Main, SideB, Footer }: HolyProps) => {
   return (
     <Wrapper>
       <div className="header">{Header}</div>

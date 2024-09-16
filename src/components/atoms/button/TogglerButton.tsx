@@ -1,7 +1,7 @@
-import { styled, useTheme } from 'styled-components';
-import { HiMoon } from 'react-icons/hi';
-import { FaSun } from 'react-icons/fa';
-import { lightTheme } from '../../../styles/themes';
+import { styled, useTheme } from "styled-components";
+import { HiMoon } from "react-icons/hi";
+import { FaSun } from "react-icons/fa";
+import { lightTheme } from "../../../styles/themes";
 
 interface ThemeTogglerProps {
   themeToggler: () => void;
@@ -36,7 +36,7 @@ const Container = styled.div`
 
   .slider:before {
     position: absolute;
-    content: '';
+    content: "";
     height: 14px;
     width: 14px;
     left: 7px;
@@ -80,7 +80,6 @@ const Icons = styled.span`
 `;
 
 export default function TogglerButton({ themeToggler }: ThemeTogglerProps) {
-
   const theme = useTheme();
 
   return (
@@ -95,11 +94,11 @@ export default function TogglerButton({ themeToggler }: ThemeTogglerProps) {
         <Icons className="slider round">
           {theme !== lightTheme ? (
             <>
-              <HiMoon style={{ marginLeft: '6.3px', height: '10px' }} />
+              <HiMoon style={{ marginLeft: "6.3px", height: "10px" }} />
             </>
           ) : (
             <>
-              <FaSun style={{ marginLeft: '41px', height: '10px' }} />
+              <FaSun style={{ marginLeft: "41px", height: "10px" }} />
             </>
           )}
         </Icons>

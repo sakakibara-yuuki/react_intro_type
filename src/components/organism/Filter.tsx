@@ -17,11 +17,10 @@ const Wrapper = styled.div`
 `;
 
 interface FilterProperty {
-  onClick: (event: React.MouseEvent<HTMLButtonElement>) => void
+  onClick: (event: React.MouseEvent<HTMLButtonElement>) => void;
 }
 
 export function Filter({ onClick }: FilterProperty) {
-
   return (
     <Wrapper>
       <Button label={"全員"} onClick={onClick} />
@@ -29,4 +28,4 @@ export function Filter({ onClick }: FilterProperty) {
       <Button label={"メンター"} onClick={onClick} />
     </Wrapper>
   );
-};
+}

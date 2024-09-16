@@ -17,41 +17,83 @@ import { Filter } from "./components/organism/Filter";
 import { Footer } from "./components/organism/Footer";
 import { Holy } from "./components/templates/Holy";
 
-
 function App() {
-
   // for add new user
   const [theme, setTheme] = useState(lightTheme);
   const allUserList: (Student | Mentor)[] = USER_LIST as (Student | Mentor)[];
-  const [userList, setUserList] = useState<(Student | Mentor)[]>(modifyUsers(allUserList));
-  const [category, setCategory] = useState<"user" | "student" | "mentor">("user");
+  const [userList, setUserList] = useState<(Student | Mentor)[]>(
+    modifyUsers(allUserList),
+  );
+  const [category, setCategory] = useState<"user" | "student" | "mentor">(
+    "user",
+  );
 
-  function addInCharge(user: Mentor, userList: (Student | Mentor)[]) {
+  function addMentorInCharge(user: Mentor, userList: (Student | Mentor)[]) {
     user.incharge = [];
     for (const otherUser of userList) {
-      if (otherUser.role !== "student") continue;
-      if (user.availableStartCode <= otherUser.taskCode && otherUser.taskCode <= user.availableEndCode) {
+      if (otherUser.role === "mentor") continue;
+      if (
+        user.availableStartCode <= otherUser.taskCode &&
+        otherUser.taskCode <= user.availableEndCode
+      ) {
         user.incharge.push(otherUser.name);
       }
     }
   }
 
-  function modifyUsers(allUserList: (Student | Mentor)[]): (Student | Mentor)[] {
+  function addStudentInCharge(user: Student, userList: (Student | Mentor)[]) {
+    user.incharge = [];
+    for (const otherUser of userList) {
+      if (otherUser.role === "student") continue;
+      if (
+        otherUser.availableStartCode <= user.taskCode &&
+        user.taskCode <= otherUser.availableEndCode
+      ) {
+        user.incharge.push(otherUser.name);
+      }
+    }
+  }
+
+  function modifyUsers(
+    allUserList: (Student | Mentor)[],
+  ): (Student | Mentor)[] {
     for (const user of allUserList) {
-      if (user.role !== "mentor") continue;
-      addInCharge(user, allUserList);
+      if (user.role === "student") {
+        addStudentInCharge(user, allUserList);
+      } else {
+        addMentorInCharge(user, allUserList);
+      }
     }
     return allUserList;
   }
 
   function addNewUser(user: Student | Mentor) {
-
-    if (user.role !== "mentor") {
-      setUserList([...userList, user]);
-      return null;
+    if (user.id == undefined || user.id == null) {
+      user.id = userList.length + 1;
     }
-    addInCharge(user, userList);
-    setUserList([...userList, user]);
+    for (const hobby of user.hobbies) {
+      if (!hobby.includes(" ")) continue;
+      user.hobbies.splice(user.hobbies.indexOf(hobby), 1);
+      user.hobbies.concat(hobby.split(" "));
+    }
+    if (user.role === "student") {
+      addStudentInCharge(user, userList);
+      setUserList([...userList, user]);
+      for (const lang of user.studyLangs) {
+        if (!lang.includes(" ")) continue;
+        user.studyLangs.splice(user.studyLangs.indexOf(lang), 1);
+        user.studyLangs.concat(lang.split(" "));
+      }
+    } else {
+      addMentorInCharge(user, userList);
+      setUserList([...userList, user]);
+      for (const lang of user.useLangs) {
+        if (lang.includes(" ")) {
+          user.useLangs.splice(user.useLangs.indexOf(lang), 1);
+          user.useLangs.concat(lang.split(" "));
+        }
+      }
+    }
   }
 
   // for submit
@@ -66,7 +108,8 @@ function App() {
       }
       data.id = userList.length + 1;
       addNewUser(data);
-    }
+    };
+    setShowList(userList);
     return onSubmit;
   }
 
@@ -91,7 +134,10 @@ function App() {
   }
 
   // for sort
-  function sortStudentList(key: "score" | "studyMinutes", order: "asc" | "desc") {
+  function sortStudentList(
+    key: "score" | "studyMinutes",
+    order: "asc" | "desc",
+  ) {
     let sortFn: (a: Student, b: Student) => number;
     if (order === "asc") {
       sortFn = (a: Student, b: Student) => a[key] - b[key];
@@ -115,15 +161,27 @@ function App() {
     <ThemeProvider theme={theme}>
       <GlobalStyle />
       <Holy
-        Header={<Header themeToggler={() => theme == lightTheme ? setTheme(darkTheme) : setTheme(lightTheme)} />}
+        Header={
+          <Header
+            themeToggler={() =>
+              theme == lightTheme ? setTheme(darkTheme) : setTheme(lightTheme)
+            }
+          />
+        }
         SideA={<UserForm submitUser={submitUser} />}
-        Main={<Table showList={showList} category={category} sortStudentList={sortStudentList} sortMentorList={sortMentorList} />}
+        Main={
+          <Table
+            showList={showList}
+            category={category}
+            sortStudentList={sortStudentList}
+            sortMentorList={sortMentorList}
+          />
+        }
         SideB={<Filter onClick={filterTable} />}
         Footer={<Footer />}
       />
     </ThemeProvider>
   );
 }
-
 
 export default App;

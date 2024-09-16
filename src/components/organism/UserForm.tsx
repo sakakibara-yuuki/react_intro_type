@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import { useState } from "react";
-import { useForm, SubmitHandler } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { Student, Mentor } from "../../types/User";
 import { Button } from "../atoms/button/Button";
 
@@ -23,7 +23,6 @@ const Form = styled.form`
 `;
 
 const ToggleDiv = styled.div`
-
   border: 1px solid ${({ theme }) => theme.text};
   border-radius: 10px;
   margin-bottom: 1em;
@@ -51,7 +50,6 @@ const ToggleDiv = styled.div`
   label :nth-child(2) {
     position: relative;
   }
-
 
   label :nth-child(1)::before {
     background-color: ${({ theme }) => theme.buttonBackground};
@@ -100,16 +98,27 @@ const ToggleDiv = styled.div`
   }
 `;
 
-function ToggleRoleOfUser({ roleOfUser, onChange }: { roleOfUser: "student" | "mentor", onChange: () => void }) {
+function ToggleRoleOfUser({
+  roleOfUser,
+  onChange,
+}: {
+  roleOfUser: "student" | "mentor";
+  onChange: () => void;
+}) {
   return (
     <ToggleDiv>
-      <input type="checkbox" id="roleOfUser" checked={roleOfUser === "student" ? false : true} onChange={onChange} />
+      <input
+        type="checkbox"
+        id="roleOfUser"
+        checked={roleOfUser === "student" ? false : true}
+        onChange={onChange}
+      />
       <label htmlFor="roleOfUser">
         <span>student</span>
         <span>mentor</span>
       </label>
     </ToggleDiv>
-  )
+  );
 }
 
 function AllUserInput({ register }: { register: any }) {
@@ -148,7 +157,10 @@ function AllUserInput({ register }: { register: any }) {
           type="text"
           id="postCode"
           placeholder="100-0003"
-          {...register("postCode", { required: true, pattern: /^[0-9]{3}-[0-9]{4}$/ })}
+          {...register("postCode", {
+            required: true,
+            pattern: /^[0-9]{3}-[0-9]{4}$/,
+          })}
         />
       </div>
       <div>
@@ -265,11 +277,10 @@ function MentorInput({ register }: { register: any }) {
         />
       </div>
     </>
-  )
+  );
 }
 
 export function UserForm({ submitUser }) {
-
   const [roleOfUser, setRoleOfUser] = useState<"student" | "mentor">("student");
   const { register, handleSubmit } = useForm<Student | Mentor>();
 
@@ -277,11 +288,20 @@ export function UserForm({ submitUser }) {
     <Form onSubmit={handleSubmit(submitUser(roleOfUser))}>
       <fieldset>
         <legend>New User</legend>
-        <ToggleRoleOfUser roleOfUser={roleOfUser} onChange={() => setRoleOfUser(roleOfUser === "student" ? "mentor" : "student")} />
+        <ToggleRoleOfUser
+          roleOfUser={roleOfUser}
+          onChange={() =>
+            setRoleOfUser(roleOfUser === "student" ? "mentor" : "student")
+          }
+        />
         <AllUserInput register={register} />
-        {roleOfUser === "student" ? <StudentInput register={register} /> : <MentorInput register={register} />}
+        {roleOfUser === "student" ? (
+          <StudentInput register={register} />
+        ) : (
+          <MentorInput register={register} />
+        )}
       </fieldset>
       <Button label={"追加"} type="submit" />
     </Form>
   );
-};
+}
