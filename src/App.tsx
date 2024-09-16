@@ -109,6 +109,7 @@ function App() {
       data.id = userList.length + 1;
       addNewUser(data);
     };
+    setShowList(userList);
     return onSubmit;
   }
 
