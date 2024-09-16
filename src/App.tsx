@@ -68,13 +68,31 @@ function App() {
   }
 
   function addNewUser(user: Student | Mentor) {
+    if (user.id == undefined || user.id == null) {
+      user.id = userList.length + 1;
+    }
+    for (const hobby of user.hobbies) {
+      if (!hobby.includes(" ")) continue;
+      user.hobbies.splice(user.hobbies.indexOf(hobby), 1);
+      user.hobbies.concat(hobby.split(" "));
+    }
     if (user.role === "student") {
       addStudentInCharge(user, userList);
       setUserList([...userList, user]);
-      return null;
+      for (const lang of user.studyLangs) {
+        if (!lang.includes(" ")) continue;
+        user.studyLangs.splice(user.studyLangs.indexOf(lang), 1);
+        user.studyLangs.concat(lang.split(" "));
+      }
     } else {
       addMentorInCharge(user, userList);
       setUserList([...userList, user]);
+      for (const lang of user.useLangs) {
+        if (lang.includes(" ")) {
+          user.useLangs.splice(user.useLangs.indexOf(lang), 1);
+          user.useLangs.concat(lang.split(" "));
+        }
+      }
     }
   }
 

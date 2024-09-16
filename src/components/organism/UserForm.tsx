@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import { useState } from "react";
-import { useForm, SubmitHandler } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { Student, Mentor } from "../../types/User";
 import { Button } from "../atoms/button/Button";
 
