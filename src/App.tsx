@@ -160,26 +160,22 @@ function App() {
   return (
     <ThemeProvider theme={theme}>
       <GlobalStyle />
-      <Holy
-        Header={
-          <Header
-            themeToggler={() =>
-              theme == lightTheme ? setTheme(darkTheme) : setTheme(lightTheme)
-            }
-          />
-        }
-        SideA={<UserForm submitUser={submitUser} />}
-        Main={
-          <Table
-            showList={showList}
-            category={category}
-            sortStudentList={sortStudentList}
-            sortMentorList={sortMentorList}
-          />
-        }
-        SideB={<Filter onClick={filterTable} />}
-        Footer={<Footer />}
-      />
+      <Holy>
+        <Header
+          themeToggler={() =>
+          theme == lightTheme ? setTheme(darkTheme) : setTheme(lightTheme)
+          }
+        />
+        <UserForm submitUser={submitUser} />
+        <Table
+          showList={showList}
+          category={category}
+          sortStudentList={sortStudentList}
+          sortMentorList={sortMentorList}
+        />
+        <Filter onClick={filterTable} />
+        <Footer />
+      </Holy>
     </ThemeProvider>
   );
 }
