@@ -17,16 +17,70 @@ import { Filter } from "./components/organism/Filter";
 import { Footer } from "./components/organism/Footer";
 import { Holy } from "./components/templates/Holy";
 
+/**
+ * The main application component that manages the state and behavior of the school app.
+ * 
+ * @component
+ * @returns {JSX.Element} The rendered component.
+ * 
+ * @remarks
+ * This component handles the following functionalities:
+ * - Theme toggling between light and dark themes.
+ * - Modifying user data to add in-charge information for students and mentors.
+ * - Adding new users with validation and data processing.
+ * - Submitting user data through a form.
+ * - Filtering the user list based on role (all, student, mentor).
+ * - Sorting the user list based on specific criteria for students and mentors.
+ * 
+ * @function modifyUsers
+ * @param {Array<Student | Mentor>} allUserList - The list of all users.
+ * @returns {Array<Student | Mentor>} The modified list of users with in-charge information.
+ * 
+ * @function addMentorInCharge
+ * @param {Mentor} user - The mentor user to add in-charge information.
+ * @param {Array<Student | Mentor>} userList - The list of all users.
+ * 
+ * @function addStudentInCharge
+ * @param {Student} user - The student user to add in-charge information.
+ * @param {Array<Student | Mentor>} userList - The list of all users.
+ * 
+ * @function addNewUser
+ * @param {Student | Mentor} user - The new user to be added.
+ * 
+ * @function submitUser
+ * @param {"student" | "mentor"} roleOfUser - The role of the user to be submitted.
+ * @returns {Function} The onSubmit function to handle form submission.
+ * 
+ * @function filterTable
+ * @param {React.MouseEvent<HTMLButtonElement>} event - The click event to filter the user list.
+ * 
+ * @function sortStudentList
+ * @param {"score" | "studyMinutes"} key - The key to sort the student list by.
+ * @param {"asc" | "desc"} order - The order to sort the student list (ascending or descending).
+ * 
+ * @function sortMentorList
+ * @param {"experienceDays"} key - The key to sort the mentor list by.
+ * @param {"asc" | "desc"} order - The order to sort the mentor list (ascending or descending).
+ */
 function App() {
   // for add new user
   const [theme, setTheme] = useState(lightTheme);
-  const allUserList: (Student | Mentor)[] = USER_LIST as (Student | Mentor)[];
-  const [userList, setUserList] = useState<(Student | Mentor)[]>(
-    modifyUsers(allUserList),
-  );
-  const [category, setCategory] = useState<"user" | "student" | "mentor">(
-    "user",
-  );
+  const allUserList: (Student | Mentor)[] = modifyUsers(USER_LIST as (Student | Mentor)[]);
+  const [userList, setUserList] = useState<(Student | Mentor)[]>(allUserList);
+  const [category, setCategory] = useState<"user" | "student" | "mentor">("user");
+
+  function modifyUsers(
+    allUserList: (Student | Mentor)[],
+  ): (Student | Mentor)[] {
+    for (const user of allUserList) {
+      if (user.role === "student") {
+        addStudentInCharge(user, allUserList);
+      } else {
+        addMentorInCharge(user, allUserList);
+      }
+    }
+    return allUserList;
+  }
 
   function addMentorInCharge(user: Mentor, userList: (Student | Mentor)[]) {
     user.incharge = [];
@@ -54,21 +108,8 @@ function App() {
     }
   }
 
-  function modifyUsers(
-    allUserList: (Student | Mentor)[],
-  ): (Student | Mentor)[] {
-    for (const user of allUserList) {
-      if (user.role === "student") {
-        addStudentInCharge(user, allUserList);
-      } else {
-        addMentorInCharge(user, allUserList);
-      }
-    }
-    return allUserList;
-  }
-
   function addNewUser(user: Student | Mentor) {
-    if (user.id == undefined || user.id == null) {
+    if (user.id == null) {
       user.id = userList.length + 1;
     }
     for (const hobby of user.hobbies) {
@@ -96,15 +137,24 @@ function App() {
     }
   }
 
+  interface StudentInput extends Student{
+    inputHobbies: string;
+    inputStudyLangs: string;
+  }
+  interface MentorInput extends Mentor{
+    inputHobbies: string;
+    inputUseLangs: string;
+  }
+
   // for submit
   function submitUser(roleOfUser: "student" | "mentor") {
-    const onSubmit = (data: any) => {
+    const onSubmit = (data: StudentInput | MentorInput) => {
       data.role = roleOfUser;
-      data.hobbies = (data.hobbies as string).split(" ");
+      data.hobbies = data.inputHobbies.split(" ");
       if (data.role === "student") {
-        data.studyLangs = (data.studyLangs as string).split(" ");
+        data.studyLangs = data.inputStudyLangs.split(" ");
       } else {
-        data.useLangs = (data.useLangs as string).split(" ");
+        data.useLangs = data.inputUseLangs.split(" ");
       }
       data.id = userList.length + 1;
       addNewUser(data);
