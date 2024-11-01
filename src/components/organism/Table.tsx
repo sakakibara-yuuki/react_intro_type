@@ -1,4 +1,3 @@
-import { useState, useMemo } from "react";
 import { styled } from "styled-components";
 import { Student, Mentor } from "../../types/User";
 

@@ -98,7 +98,7 @@ function App() {
 
   // for submit
   function submitUser(roleOfUser: "student" | "mentor") {
-    const onSubmit = (data) => {
+    const onSubmit = (data: any) => {
       data.role = roleOfUser;
       data.hobbies = (data.hobbies as string).split(" ");
       if (data.role === "student") {

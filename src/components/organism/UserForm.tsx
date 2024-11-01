@@ -280,7 +280,7 @@ function MentorInput({ register }: { register: any }) {
   );
 }
 
-export function UserForm({ submitUser }) {
+export function UserForm({ submitUser }: { submitUser: any }) {
   const [roleOfUser, setRoleOfUser] = useState<"student" | "mentor">("student");
   const { register, handleSubmit } = useForm<Student | Mentor>();
 
