@@ -16,6 +16,17 @@ import { Holy } from "./components/templates/Holy";
 export type RoleType = "student" | "mentor";
 export type CategoryType = "all" | RoleType;
 type UserListType = (Student | Mentor)[];
+export interface StudentInputIF extends Student {
+  inputHobbies: string;
+  inputStudyLangs: string;
+}
+export interface MentorInputIF extends Mentor {
+  inputHobbies: string;
+  inputUseLangs: string;
+}
+type SubmitUserFuncType = (data: StudentInputIF | MentorInputIF) => void;
+export type SubmitUserType = (roleOfUser: RoleType) => SubmitUserFuncType;
+
 
 function App() {
   // for add new user
@@ -98,20 +109,12 @@ function App() {
   }
 
   // for submit
-  interface StudentInput extends Student {
-    inputHobbies: string;
-    inputStudyLangs: string;
-  }
-
-  interface MentorInput extends Mentor {
-    inputHobbies: string;
-    inputUseLangs: string;
-  }
-
   function submitUser(roleOfUser: RoleType) {
-    const userList = userListRef.current;
-    return (data: StudentInput | MentorInput) => {
+    return (data: StudentInputIF | MentorInputIF) => {
+      const userList = userListRef.current;
       data.role = roleOfUser;
+      console.log(userList);
+      console.log(data.inputHobbies);
       data.hobbies = data.inputHobbies.split(" ");
       if (data.role === "student") {
         data.studyLangs = data.inputStudyLangs.split(" ");
