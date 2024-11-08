@@ -110,8 +110,8 @@ function App() {
 
   // for submit
   function submitUser(roleOfUser: RoleType) {
+    const userList = userListRef.current;
     return (data: StudentInputIF | MentorInputIF) => {
-      const userList = userListRef.current;
       data.role = roleOfUser;
       data.hobbies = data.inputHobbies.split(" ");
       if (data.role === "student") {
@@ -121,7 +121,7 @@ function App() {
       }
       data.id = userList.length + 1;
       addNewUser(data);
-      setShowList([...userList]);
+      setShowList([...userListRef.current]);
     };
   }
 
