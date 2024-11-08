@@ -113,8 +113,6 @@ function App() {
     return (data: StudentInputIF | MentorInputIF) => {
       const userList = userListRef.current;
       data.role = roleOfUser;
-      console.log(userList);
-      console.log(data.inputHobbies);
       data.hobbies = data.inputHobbies.split(" ");
       if (data.role === "student") {
         data.studyLangs = data.inputStudyLangs.split(" ");
@@ -123,7 +121,7 @@ function App() {
       }
       data.id = userList.length + 1;
       addNewUser(data);
-      setShowList(userList);
+      setShowList([...userList]);
     };
   }
 
@@ -133,7 +131,7 @@ function App() {
     switch (event.currentTarget.innerText) {
       case "全員":
         setCategory("all");
-        setShowList(userList);
+        setShowList([...userList]);
         break;
       case "生徒":
         setCategory("student");
