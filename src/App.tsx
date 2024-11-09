@@ -1,8 +1,4 @@
-// TODO: 1. validation for the json file
-// TODO: 2. immigrate type definition to the json file
-// TODO: 3. create a table with the json file
-
-import { useState } from "react";
+import { useState, useRef } from "react";
 
 import { ThemeProvider } from "styled-components";
 import GlobalStyle from "./styles/global";
@@ -17,31 +13,43 @@ import { Filter } from "./components/organism/Filter";
 import { Footer } from "./components/organism/Footer";
 import { Holy } from "./components/templates/Holy";
 
+export type RoleType = "student" | "mentor";
+export type CategoryType = "all" | RoleType;
+type UserListType = (Student | Mentor)[];
+export interface StudentInputIF extends Student {
+  inputHobbies: string;
+  inputStudyLangs: string;
+}
+export interface MentorInputIF extends Mentor {
+  inputHobbies: string;
+  inputUseLangs: string;
+}
+type SubmitUserFuncType = (data: StudentInputIF | MentorInputIF) => void;
+export type SubmitUserType = (roleOfUser: RoleType) => SubmitUserFuncType;
+
+
 function App() {
   // for add new user
   const [theme, setTheme] = useState(lightTheme);
-  const allUserList: (Student | Mentor)[] = USER_LIST as (Student | Mentor)[];
-  const [userList, setUserList] = useState<(Student | Mentor)[]>(
-    modifyUsers(allUserList),
-  );
-  const [category, setCategory] = useState<"user" | "student" | "mentor">(
-    "user",
-  );
+  const [category, setCategory] = useState<CategoryType>("all");
+  const allUserList: UserListType = assignInChargeToUsers(USER_LIST as UserListType);
+  const userListRef = useRef<UserListType>(allUserList);
+  const [showList, setShowList] = useState<UserListType>(userListRef.current);
 
-  function addMentorInCharge(user: Mentor, userList: (Student | Mentor)[]) {
-    user.incharge = [];
-    for (const otherUser of userList) {
-      if (otherUser.role === "mentor") continue;
-      if (
-        user.availableStartCode <= otherUser.taskCode &&
-        otherUser.taskCode <= user.availableEndCode
-      ) {
-        user.incharge.push(otherUser.name);
+  function assignInChargeToUsers(
+    allUserList: UserListType,
+  ): UserListType {
+    for (const user of allUserList) {
+      if (user.role === "student") {
+        addStudentInCharge(user, allUserList);
+      } else {
+        addMentorInCharge(user, allUserList);
       }
     }
+    return allUserList;
   }
 
-  function addStudentInCharge(user: Student, userList: (Student | Mentor)[]) {
+  function addStudentInCharge(user: Student, userList: UserListType) {
     user.incharge = [];
     for (const otherUser of userList) {
       if (otherUser.role === "student") continue;
@@ -54,31 +62,35 @@ function App() {
     }
   }
 
-  function modifyUsers(
-    allUserList: (Student | Mentor)[],
-  ): (Student | Mentor)[] {
-    for (const user of allUserList) {
-      if (user.role === "student") {
-        addStudentInCharge(user, allUserList);
-      } else {
-        addMentorInCharge(user, allUserList);
+  function addMentorInCharge(user: Mentor, userList: UserListType) {
+    user.incharge = [];
+    for (const otherUser of userList) {
+      if (otherUser.role === "mentor") continue;
+      if (
+        user.availableStartCode <= otherUser.taskCode &&
+        otherUser.taskCode <= user.availableEndCode
+      ) {
+        user.incharge.push(otherUser.name);
       }
     }
-    return allUserList;
   }
 
   function addNewUser(user: Student | Mentor) {
-    if (user.id == undefined || user.id == null) {
+
+    const userList = userListRef.current;
+
+    if (user.id == null) {
       user.id = userList.length + 1;
     }
+
     for (const hobby of user.hobbies) {
       if (!hobby.includes(" ")) continue;
       user.hobbies.splice(user.hobbies.indexOf(hobby), 1);
       user.hobbies.concat(hobby.split(" "));
     }
+
     if (user.role === "student") {
       addStudentInCharge(user, userList);
-      setUserList([...userList, user]);
       for (const lang of user.studyLangs) {
         if (!lang.includes(" ")) continue;
         user.studyLangs.splice(user.studyLangs.indexOf(lang), 1);
@@ -86,7 +98,6 @@ function App() {
       }
     } else {
       addMentorInCharge(user, userList);
-      setUserList([...userList, user]);
       for (const lang of user.useLangs) {
         if (lang.includes(" ")) {
           user.useLangs.splice(user.useLangs.indexOf(lang), 1);
@@ -94,33 +105,33 @@ function App() {
         }
       }
     }
+    userListRef.current = [...userList, user];
   }
 
   // for submit
-  function submitUser(roleOfUser: "student" | "mentor") {
-    const onSubmit = (data) => {
+  function submitUser(roleOfUser: RoleType) {
+    const userList = userListRef.current;
+    return (data: StudentInputIF | MentorInputIF) => {
       data.role = roleOfUser;
-      data.hobbies = (data.hobbies as string).split(" ");
+      data.hobbies = data.inputHobbies.split(" ");
       if (data.role === "student") {
-        data.studyLangs = (data.studyLangs as string).split(" ");
+        data.studyLangs = data.inputStudyLangs.split(" ");
       } else {
-        data.useLangs = (data.useLangs as string).split(" ");
+        data.useLangs = data.inputUseLangs.split(" ");
       }
       data.id = userList.length + 1;
       addNewUser(data);
+      setShowList([...userListRef.current]);
     };
-    setShowList(userList);
-    return onSubmit;
   }
-
-  const [showList, setShowList] = useState<(Student | Mentor)[]>(userList);
 
   // for filter
   function filterTable(event: React.MouseEvent<HTMLButtonElement>): void {
+    const userList = userListRef.current;
     switch (event.currentTarget.innerText) {
       case "全員":
-        setCategory("user");
-        setShowList(userList);
+        setCategory("all");
+        setShowList([...userList]);
         break;
       case "生徒":
         setCategory("student");
@@ -144,7 +155,8 @@ function App() {
     } else {
       sortFn = (a: Student, b: Student) => b[key] - a[key];
     }
-    setShowList([...(showList as Student[]).sort(sortFn)]);
+    const showUserList = userListRef.current.filter((user) => user.role == "student");
+    setShowList([...showUserList.sort(sortFn)]);
   }
 
   function sortMentorList(key: "experienceDays", order: "asc" | "desc") {
@@ -154,32 +166,29 @@ function App() {
     } else {
       sortFn = (a: Mentor, b: Mentor) => b[key] - a[key];
     }
-    setShowList([...(showList as Mentor[]).sort(sortFn)]);
+    const showMentorList = userListRef.current.filter((user) => user.role == "mentor");
+    setShowList([...showMentorList.sort(sortFn)]);
   }
 
   return (
     <ThemeProvider theme={theme}>
       <GlobalStyle />
-      <Holy
-        Header={
-          <Header
-            themeToggler={() =>
-              theme == lightTheme ? setTheme(darkTheme) : setTheme(lightTheme)
-            }
-          />
-        }
-        SideA={<UserForm submitUser={submitUser} />}
-        Main={
-          <Table
-            showList={showList}
-            category={category}
-            sortStudentList={sortStudentList}
-            sortMentorList={sortMentorList}
-          />
-        }
-        SideB={<Filter onClick={filterTable} />}
-        Footer={<Footer />}
-      />
+      <Holy>
+        <Header
+          themeToggler={() =>
+            theme == lightTheme ? setTheme(darkTheme) : setTheme(lightTheme)
+          }
+        />
+        <UserForm submitUser={submitUser} />
+        <Table
+          showList={showList}
+          category={category}
+          sortStudentList={sortStudentList}
+          sortMentorList={sortMentorList}
+        />
+        <Filter onClick={filterTable} />
+        <Footer />
+      </Holy>
     </ThemeProvider>
   );
 }

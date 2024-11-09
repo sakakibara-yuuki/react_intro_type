@@ -1,8 +1,8 @@
 import styled from "styled-components";
 import { useState } from "react";
-import { useForm } from "react-hook-form";
-import { Student, Mentor } from "../../types/User";
+import { useForm, UseFormRegister } from "react-hook-form";
 import { Button } from "../atoms/button/Button";
+import type { RoleType, StudentInputIF, MentorInputIF, SubmitUserType } from "../../App";
 
 const Form = styled.form`
   padding: 1em;
@@ -102,7 +102,7 @@ function ToggleRoleOfUser({
   roleOfUser,
   onChange,
 }: {
-  roleOfUser: "student" | "mentor";
+  roleOfUser: RoleType;
   onChange: () => void;
 }) {
   return (
@@ -121,7 +121,9 @@ function ToggleRoleOfUser({
   );
 }
 
-function AllUserInput({ register }: { register: any }) {
+type RegisterType = UseFormRegister<StudentInputIF | MentorInputIF>
+
+function AllUserInput({ register }: { register: RegisterType }) {
   return (
     <>
       <div>
@@ -178,7 +180,7 @@ function AllUserInput({ register }: { register: any }) {
           type="text"
           id="hobbies"
           placeholder="旅行 食べ歩き サーフィン"
-          {...register("hobbies", { required: true })}
+          {...register("inputHobbies", { required: true })}
         />
       </div>
       <div>
@@ -194,7 +196,7 @@ function AllUserInput({ register }: { register: any }) {
   );
 }
 
-function StudentInput({ register }: { register: any }) {
+function StudentInput({ register }: { register: RegisterType }) {
   return (
     <>
       <div>
@@ -229,15 +231,15 @@ function StudentInput({ register }: { register: any }) {
         <input
           type="text"
           id="studyLangs"
-          placeholder="RailsJavascript"
-          {...register("studyLangs", { required: true })}
+          placeholder="Rails Javascript"
+          {...register("inputStudyLangs", { required: true })}
         />
       </div>
     </>
   );
 }
 
-function MentorInput({ register }: { register: any }) {
+function MentorInput({ register }: { register: RegisterType }) {
   return (
     <>
       <div>
@@ -254,8 +256,8 @@ function MentorInput({ register }: { register: any }) {
         <input
           type="text"
           id="useLangs"
-          placeholder="Next.jsGoLang"
-          {...register("useLangs", { required: true })}
+          placeholder="Next.js GoLang"
+          {...register("inputUseLangs", { required: true })}
         />
       </div>
       <div>
@@ -280,9 +282,11 @@ function MentorInput({ register }: { register: any }) {
   );
 }
 
-export function UserForm({ submitUser }) {
-  const [roleOfUser, setRoleOfUser] = useState<"student" | "mentor">("student");
-  const { register, handleSubmit } = useForm<Student | Mentor>();
+export function UserForm({
+  submitUser,
+}: { submitUser: SubmitUserType }) {
+  const [roleOfUser, setRoleOfUser] = useState<RoleType>("student");
+  const { register, handleSubmit } = useForm<StudentInputIF | MentorInputIF>();
 
   return (
     <Form onSubmit={handleSubmit(submitUser(roleOfUser))}>
