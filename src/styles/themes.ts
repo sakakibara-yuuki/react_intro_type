@@ -23,20 +23,6 @@ const pallet1: ColorPallet = {
   quaternary: "#276678",
 };
 
-const pallet2: ColorPallet = {
-  primary: "#ECF4F3",
-  secondary: "#68B0AB",
-  tertiary: "#006A71",
-  quaternary: "#FF7E67",
-};
-
-const pallet3: ColorPallet = {
-  primary: "#FFE8DF",
-  secondary: "#FFFFFF",
-  tertiary: "#F0F0F0",
-  quaternary: "#888888",
-};
-
 export interface ThemeProps {
   backgroundColor: string;
   buttonBackground?: string;

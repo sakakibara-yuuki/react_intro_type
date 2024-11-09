@@ -54,15 +54,14 @@ const Wrapper = styled.div`
   }
 `;
 
+
 interface HolyProps {
-  Header: ReactNode;
-  SideA: ReactNode;
-  Main: ReactNode;
-  SideB: ReactNode;
-  Footer: ReactNode;
+  children: ReactNode[];
 }
 
-export const Holy = ({ Header, SideA, Main, SideB, Footer }: HolyProps) => {
+export const Holy = ({ children }: HolyProps) => {
+  const [Header, SideA, Main, SideB, Footer] = children;
+
   return (
     <Wrapper>
       <div className="header">{Header}</div>

@@ -1,10 +1,10 @@
-import { useState, useMemo } from "react";
 import { styled } from "styled-components";
 import { Student, Mentor } from "../../types/User";
+import type { CategoryType  } from "../../App";
 
 interface TableProps {
   showList: (Student | Mentor)[];
-  category: "user" | "student" | "mentor";
+  category: CategoryType;
   sortStudentList: (
     key: "score" | "studyMinutes",
     order: "asc" | "desc",
@@ -82,7 +82,7 @@ export function Table({
   ];
   const sortableAttributes = ["score", "studyMinutes", "experienceDays"];
 
-  if (category === "user") {
+  if (category === "all") {
     attributes = [...attributes, ...studentAttributes, ...mentorAttributes];
   } else if (category === "student") {
     attributes = [...attributes, ...studentAttributes];
@@ -92,7 +92,7 @@ export function Table({
 
   const attributeTableHeader = attributes.map((key) => {
     let buttons;
-    if (category === "user") {
+    if (category === "all") {
       buttons = <></>;
     } else if (category === "student") {
       const sortKey = key === "score" ? "score" : "studyMinutes";
@@ -124,7 +124,7 @@ export function Table({
 
   function showUserList() {
     switch (category) {
-      case "user":
+      case "all":
         return showList;
       case "student":
         return showList.filter((user) => user.role == "student");
